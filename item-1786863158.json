@@ -325,7 +325,7 @@
     "sprite": "/sprites/weapons/staff_all_seeing.png",
     "levelMax": 15,
     "cooldown": 600,
-    "isUpcoming": false,
+    "isUpcoming": true,
     "stats": {
       "damage": [
         135,
@@ -1467,7 +1467,7 @@
     "sprite": "/sprites/others/earring_03_jump.png",
     "levelMax": 0,
     "cooldown": 0,
-    "isUpcoming": false,
+    "isUpcoming": true,
     "stats": {
       "damage": [
         0,
@@ -2460,7 +2460,7 @@
     "sprite": "/sprites/weapons/staff_dragonhead.png",
     "levelMax": 15,
     "cooldown": 550,
-    "isUpcoming": false,
+    "isUpcoming": true,
     "stats": {
       "damage": [
         102,
@@ -2974,7 +2974,7 @@
     "sprite": "/sprites/armors/armor_cloth_special_f1b.png",
     "levelMax": 8,
     "cooldown": 0,
-    "isUpcoming": false,
+    "isUpcoming": true,
     "stats": {
       "damage": [
         0,
@@ -4212,7 +4212,7 @@
     "sprite": "/sprites/weapons/hammer_cthulhu.png",
     "levelMax": 15,
     "cooldown": 700,
-    "isUpcoming": false,
+    "isUpcoming": true,
     "stats": {
       "damage": [
         68,
@@ -7705,7 +7705,7 @@
     "sprite": "/sprites/others/pet_agent.png",
     "levelMax": 0,
     "cooldown": 0,
-    "isUpcoming": false,
+    "isUpcoming": true,
     "stats": {
       "damage": [
         0,
@@ -7851,7 +7851,7 @@
     "sprite": "/sprites/weapons/sword_master_plus.png",
     "levelMax": 15,
     "cooldown": 530,
-    "isUpcoming": false,
+    "isUpcoming": true,
     "stats": {
       "damage": [
         88,
@@ -7922,7 +7922,7 @@
     "sprite": "/sprites/armors/armor_explorer_2_A.png",
     "levelMax": 15,
     "cooldown": 0,
-    "isUpcoming": false,
+    "isUpcoming": true,
     "stats": {
       "damage": [
         0,
@@ -8061,7 +8061,7 @@
     "sprite": "/sprites/others/necklace_03_jump.png",
     "levelMax": 0,
     "cooldown": 0,
-    "isUpcoming": false,
+    "isUpcoming": true,
     "stats": {
       "damage": [
         0,
@@ -9754,7 +9754,7 @@
     "sprite": "/sprites/weapons/hammer_root.png",
     "levelMax": 15,
     "cooldown": 700,
-    "isUpcoming": false,
+    "isUpcoming": true,
     "stats": {
       "damage": [
         66,
@@ -9925,7 +9925,7 @@
     "sprite": "/sprites/armors/armor_explorer_1_A.png",
     "levelMax": 15,
     "cooldown": 0,
-    "isUpcoming": false,
+    "isUpcoming": true,
     "stats": {
       "damage": [
         0,
@@ -10448,7 +10448,7 @@
     "sprite": "/sprites/others/armlet_03_jump.png",
     "levelMax": 0,
     "cooldown": 0,
-    "isUpcoming": false,
+    "isUpcoming": true,
     "stats": {
       "damage": [
         0,
@@ -13066,7 +13066,7 @@
     "sprite": "/sprites/armors/armor_water_cloth_a.png",
     "levelMax": 15,
     "cooldown": 0,
-    "isUpcoming": false,
+    "isUpcoming": true,
     "stats": {
       "damage": [
         0,
