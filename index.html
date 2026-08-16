@@ -3,29 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Inventory Rampager Data CDN & Explorer</title>
-  <meta name="description" content="Data repository and manifest hub for Inventory Rampager items, versions, and game assets.">
+  <title>Inventory Rampager Data Studio & CDN Explorer</title>
+  <meta name="description" content="Data Studio & CDN manifest editor for Inventory Rampager items, versions, and game assets.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg-primary: #0b0f19;
       --bg-secondary: #111827;
-      --bg-card: rgba(17, 24, 39, 0.75);
-      --bg-card-hover: rgba(31, 41, 55, 0.85);
+      --bg-tertiary: #1f2937;
+      --bg-card: rgba(17, 24, 39, 0.85);
+      --bg-card-hover: rgba(31, 41, 55, 0.95);
       --border-color: rgba(255, 255, 255, 0.08);
-      --border-focus: rgba(99, 102, 241, 0.5);
+      --border-focus: rgba(99, 102, 241, 0.6);
       --text-primary: #f3f4f6;
       --text-secondary: #9ca3af;
       --text-muted: #6b7280;
       --accent: #6366f1;
-      --accent-glow: rgba(99, 102, 241, 0.25);
+      --accent-glow: rgba(99, 102, 241, 0.3);
       --accent-hover: #4f46e5;
       --success: #10b981;
       --success-glow: rgba(16, 185, 129, 0.2);
       --warning: #f59e0b;
+      --warning-glow: rgba(245, 158, 11, 0.2);
       --danger: #ef4444;
+      --danger-glow: rgba(239, 68, 68, 0.2);
       --cyan: #06b6d4;
       --purple: #a855f7;
       
@@ -36,6 +39,7 @@
       --elem-earth: #d97706;
       --elem-light: #fbbf24;
       --elem-dark: #8b5cf6;
+      --elem-air: #06b6d4;
       --elem-none: #6b7280;
 
       --radius-sm: 8px;
@@ -59,28 +63,28 @@
       min-height: 100vh;
       overflow-x: hidden;
       background-image: 
-        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.15), transparent),
-        radial-gradient(ellipse 60% 40% at 80% 70%, rgba(6, 182, 212, 0.08), transparent);
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.18), transparent),
+        radial-gradient(ellipse 60% 40% at 85% 70%, rgba(6, 182, 212, 0.08), transparent);
       background-attachment: fixed;
     }
 
-    code, pre {
+    code, pre, .font-mono {
       font-family: 'JetBrains Mono', monospace;
     }
 
     /* Container */
     .container {
-      max-width: 1240px;
+      max-width: 1320px;
       margin: 0 auto;
-      padding: 2.5rem 1.5rem;
+      padding: 2rem 1.5rem 4rem;
     }
 
     /* Header */
     header {
       display: flex;
       flex-direction: column;
-      gap: 1rem;
-      margin-bottom: 2.5rem;
+      gap: 1.25rem;
+      margin-bottom: 2rem;
     }
 
     .header-top {
@@ -94,39 +98,55 @@
     .brand {
       display: flex;
       align-items: center;
-      gap: 0.875rem;
+      gap: 1rem;
     }
 
     .brand-icon {
-      width: 44px;
-      height: 44px;
+      width: 48px;
+      height: 48px;
       border-radius: var(--radius-md);
       background: linear-gradient(135deg, var(--accent), #8b5cf6);
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 16px var(--accent-glow);
+      box-shadow: 0 6px 20px var(--accent-glow);
     }
 
     .brand-icon svg {
-      width: 24px;
-      height: 24px;
+      width: 26px;
+      height: 26px;
       color: white;
     }
 
     .brand-title {
-      font-size: 1.5rem;
-      font-weight: 700;
+      font-size: 1.625rem;
+      font-weight: 800;
       letter-spacing: -0.025em;
       background: linear-gradient(to right, #ffffff, #cbd5e1);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .badge-studio {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(168, 85, 247, 0.3));
+      border: 1px solid rgba(168, 85, 247, 0.4);
+      color: #c084fc;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      -webkit-text-fill-color: #c084fc;
     }
 
     .header-actions {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.625rem;
       flex-wrap: wrap;
     }
 
@@ -173,8 +193,140 @@
 
     .header-desc {
       color: var(--text-secondary);
-      font-size: 0.95rem;
-      max-width: 720px;
+      font-size: 0.9375rem;
+      max-width: 840px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 0.95rem;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      font-family: inherit;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-decoration: none;
+      transition: var(--transition);
+      border: 1px solid transparent;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--border-color);
+      color: var(--text-primary);
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--accent-hover);
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+    .btn-success:hover:not(:disabled) {
+      background: #059669;
+      box-shadow: 0 4px 14px var(--success-glow);
+    }
+
+    .btn-warning {
+      background: rgba(245, 158, 11, 0.15);
+      border-color: rgba(245, 158, 11, 0.35);
+      color: #fbbf24;
+    }
+    .btn-warning:hover:not(:disabled) {
+      background: rgba(245, 158, 11, 0.25);
+      border-color: #f59e0b;
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: rgba(239, 68, 68, 0.35);
+      color: #f87171;
+    }
+    .btn-danger:hover:not(:disabled) {
+      background: rgba(239, 68, 68, 0.25);
+      border-color: #ef4444;
+    }
+
+    .btn-outline-accent {
+      background: rgba(99, 102, 241, 0.1);
+      border-color: rgba(99, 102, 241, 0.35);
+      color: #a5b4fc;
+    }
+    .btn-outline-accent:hover:not(:disabled) {
+      background: rgba(99, 102, 241, 0.2);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .btn-sm {
+      padding: 0.35rem 0.65rem;
+      font-size: 0.75rem;
+      border-radius: var(--radius-sm);
+    }
+
+    /* Change notification bar */
+    .change-tracker-bar {
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      border-radius: var(--radius-md);
+      padding: 0.75rem 1.25rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Notice Banner */
+    .banner {
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      border-radius: var(--radius-md);
+      padding: 0.875rem 1.25rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .banner-content {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.875rem;
     }
 
     /* Grid Stats */
@@ -182,7 +334,7 @@
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 1.25rem;
-      margin-bottom: 2.5rem;
+      margin-bottom: 2rem;
     }
 
     .stat-card {
@@ -196,6 +348,8 @@
       flex-direction: column;
       gap: 0.375rem;
       transition: var(--transition);
+      position: relative;
+      overflow: hidden;
     }
 
     .stat-card:hover {
@@ -223,171 +377,45 @@
       color: var(--text-muted);
     }
 
-    /* Endpoints Section */
-    .section-title {
-      font-size: 1.25rem;
-      font-weight: 600;
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-    }
-
-    .section-title-left {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .endpoints-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.875rem;
-      margin-bottom: 3rem;
-    }
-
-    .endpoint-card {
+    /* Studio Toolbar */
+    .studio-toolbar {
       background: var(--bg-card);
       border: 1px solid var(--border-color);
-      border-radius: var(--radius-md);
-      padding: 1rem 1.25rem;
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      backdrop-filter: blur(12px);
+    }
+
+    .toolbar-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 1rem;
       flex-wrap: wrap;
-      transition: var(--transition);
-    }
-
-    .endpoint-card:hover {
-      background: var(--bg-card-hover);
-      border-color: var(--border-focus);
-    }
-
-    .endpoint-left {
-      display: flex;
-      align-items: center;
       gap: 0.75rem;
-      flex-wrap: wrap;
     }
 
-    .method-badge {
-      font-size: 0.75rem;
-      font-weight: 700;
-      padding: 0.2rem 0.5rem;
-      border-radius: var(--radius-sm);
-      background: rgba(99, 102, 241, 0.2);
-      color: #818cf8;
-      border: 1px solid rgba(99, 102, 241, 0.3);
-    }
-
-    .endpoint-path {
-      font-size: 0.9375rem;
-      font-weight: 500;
-      color: var(--text-primary);
-    }
-
-    .endpoint-desc {
-      font-size: 0.8125rem;
-      color: var(--text-secondary);
-    }
-
-    .endpoint-actions {
+    .toolbar-left, .toolbar-right {
       display: flex;
       align-items: center;
       gap: 0.5rem;
       flex-wrap: wrap;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.375rem;
-      padding: 0.45rem 0.875rem;
-      font-size: 0.8125rem;
-      font-weight: 500;
-      font-family: inherit;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      text-decoration: none;
-      transition: var(--transition);
-      border: 1px solid transparent;
-      user-select: none;
-    }
-
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.05);
-      border-color: var(--border-color);
-      color: var(--text-primary);
-    }
-
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: rgba(255, 255, 255, 0.2);
-    }
-
-    .btn-primary {
-      background: var(--accent);
-      color: white;
-    }
-
-    .btn-primary:hover {
-      background: var(--accent-hover);
-      box-shadow: 0 2px 10px var(--accent-glow);
-    }
-
-    .btn-outline-accent {
-      background: rgba(99, 102, 241, 0.1);
-      border-color: rgba(99, 102, 241, 0.3);
-      color: #a5b4fc;
-    }
-    .btn-outline-accent:hover {
-      background: rgba(99, 102, 241, 0.2);
-      border-color: var(--accent);
-      color: #fff;
-    }
-
-    /* Notice Banner for Protocol file:// or Fallback */
-    .banner {
-      background: rgba(99, 102, 241, 0.1);
-      border: 1px solid rgba(99, 102, 241, 0.25);
-      border-radius: var(--radius-md);
-      padding: 0.875rem 1.25rem;
-      margin-bottom: 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .banner-content {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      font-size: 0.875rem;
-    }
-
-    /* Explorer Section */
-    .explorer-header {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      margin-bottom: 1.25rem;
     }
 
     .filter-bar {
       display: grid;
-      grid-template-columns: 2fr repeat(auto-fit, minmax(140px, 1fr));
-      gap: 0.75rem;
+      grid-template-columns: 2.2fr repeat(auto-fit, minmax(135px, 1fr));
+      gap: 0.625rem;
       align-items: center;
+      width: 100%;
     }
 
     .search-input-wrap {
       position: relative;
-      min-width: 220px;
+      min-width: 200px;
     }
 
     .search-input-wrap svg {
@@ -398,6 +426,7 @@
       width: 18px;
       height: 18px;
       color: var(--text-muted);
+      pointer-events: none;
     }
 
     .search-input {
@@ -436,23 +465,6 @@
       border-color: var(--accent);
     }
 
-    .explorer-subbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      font-size: 0.8125rem;
-      color: var(--text-secondary);
-      margin-top: 0.5rem;
-    }
-
-    .explorer-subbar-actions {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
     /* Table / Item Grid */
     .items-container {
       background: var(--bg-card);
@@ -460,6 +472,7 @@
       border-radius: var(--radius-lg);
       overflow: hidden;
       backdrop-filter: blur(12px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     }
 
     .items-table {
@@ -471,7 +484,7 @@
 
     .items-table th {
       padding: 0.875rem 1.25rem;
-      background: rgba(0, 0, 0, 0.2);
+      background: rgba(0, 0, 0, 0.25);
       color: var(--text-secondary);
       font-weight: 600;
       font-size: 0.75rem;
@@ -497,6 +510,17 @@
 
     .items-table tbody tr:hover td {
       background: rgba(255, 255, 255, 0.03);
+    }
+
+    .items-table tbody tr.is-modified td {
+      background: rgba(245, 158, 11, 0.03);
+    }
+    .items-table tbody tr.is-new td {
+      background: rgba(16, 185, 129, 0.03);
+    }
+    .items-table tbody tr.is-deleted td {
+      background: rgba(239, 68, 68, 0.04);
+      opacity: 0.5;
     }
 
     .item-cell {
@@ -550,9 +574,9 @@
     .item-id {
       font-size: 0.75rem;
       color: var(--text-muted);
-      font-family: 'JetBrains Mono', monospace;
     }
 
+    /* Badges & Tags */
     .tag {
       display: inline-flex;
       align-items: center;
@@ -562,6 +586,25 @@
       padding: 0.15rem 0.45rem;
       border-radius: var(--radius-sm);
       text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .tag-status-modified {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.4);
+    }
+
+    .tag-status-new {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+
+    .tag-status-deleted {
+      background: rgba(239, 68, 68, 0.2);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.4);
     }
 
     .tag-upcoming {
@@ -571,15 +614,14 @@
       box-shadow: 0 0 6px rgba(245, 158, 11, 0.15);
     }
 
-    .tag-elem {
-      text-transform: capitalize;
-    }
+    .tag-elem { text-transform: capitalize; }
     .elem-water { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
     .elem-fire { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
     .elem-wind { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
     .elem-earth { background: rgba(217, 119, 6, 0.15); color: #fbbf24; border: 1px solid rgba(217, 119, 6, 0.3); }
     .elem-light { background: rgba(251, 191, 36, 0.15); color: #fde047; border: 1px solid rgba(251, 191, 36, 0.3); }
     .elem-dark { background: rgba(139, 92, 246, 0.15); color: #c084fc; border: 1px solid rgba(139, 92, 246, 0.3); }
+    .elem-air { background: rgba(6, 182, 212, 0.15); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.3); }
     .elem-none { background: rgba(107, 114, 128, 0.15); color: #9ca3af; border: 1px solid rgba(107, 114, 128, 0.3); }
 
     .tag-type {
@@ -612,18 +654,11 @@
       font-weight: 500;
     }
 
-    /* Empty / Dropzone / Error State */
+    /* Empty / Dropzone State */
     .empty-state {
       padding: 3.5rem 1.5rem;
       text-align: center;
       color: var(--text-muted);
-    }
-
-    .empty-icon {
-      width: 48px;
-      height: 48px;
-      margin: 0 auto 1rem;
-      opacity: 0.4;
     }
 
     .dropzone-box {
@@ -643,29 +678,29 @@
       transform: scale(1.005);
     }
 
-    /* Pagination controls */
+    /* Pagination */
     .pagination-bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 1rem 1.25rem;
-      background: rgba(0, 0, 0, 0.15);
+      padding: 0.875rem 1.25rem;
+      background: rgba(0, 0, 0, 0.2);
       border-top: 1px solid var(--border-color);
       flex-wrap: wrap;
       gap: 0.75rem;
     }
 
-    /* Modal */
+    /* Modal Framework */
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(6px);
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 1.5rem;
-      z-index: 100;
+      z-index: 1000;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.2s ease;
@@ -681,47 +716,57 @@
       border: 1px solid var(--border-color);
       border-radius: var(--radius-lg);
       width: 100%;
-      max-width: 720px;
-      max-height: 85vh;
+      max-width: 960px;
+      max-height: 90vh;
       display: flex;
       flex-direction: column;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+      box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.8);
       overflow: hidden;
+      animation: modalSlide 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes modalSlide {
+      from { transform: scale(0.96) translateY(8px); }
+      to { transform: scale(1) translateY(0); }
     }
 
     .modal-header {
-      padding: 1.25rem 1.5rem;
+      padding: 1.15rem 1.5rem;
       border-bottom: 1px solid var(--border-color);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: rgba(0, 0, 0, 0.2);
+      background: rgba(0, 0, 0, 0.25);
     }
 
     .modal-title-group {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.875rem;
     }
 
     .modal-title {
-      font-size: 1.125rem;
-      font-weight: 600;
+      font-size: 1.2rem;
+      font-weight: 700;
       color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
     .modal-tabs {
       display: flex;
-      background: rgba(0, 0, 0, 0.3);
-      padding: 0.35rem 1.5rem;
+      background: rgba(0, 0, 0, 0.35);
+      padding: 0.4rem 1.5rem;
       border-bottom: 1px solid var(--border-color);
       gap: 0.5rem;
+      overflow-x: auto;
     }
 
     .tab-btn {
       background: transparent;
       border: none;
-      padding: 0.4rem 0.85rem;
+      padding: 0.5rem 0.95rem;
       font-size: 0.8125rem;
       font-weight: 500;
       color: var(--text-secondary);
@@ -729,10 +774,14 @@
       border-radius: var(--radius-sm);
       font-family: inherit;
       transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      white-space: nowrap;
     }
 
     .tab-btn.active {
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.1);
       color: var(--text-primary);
       font-weight: 600;
     }
@@ -743,48 +792,15 @@
       flex: 1;
     }
 
-    /* Modal Spec Grid */
-    .spec-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 1rem;
-      margin-top: 1rem;
-    }
-
-    .spec-card {
-      background: rgba(0, 0, 0, 0.25);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-md);
-      padding: 0.875rem 1rem;
+    .modal-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--border-color);
       display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-    }
-
-    .spec-card-label {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .spec-card-value {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: var(--text-primary);
-    }
-
-    .json-code {
-      font-size: 0.8125rem;
-      color: #a5b4fc;
-      white-space: pre-wrap;
-      word-break: break-all;
-      background: rgba(0, 0, 0, 0.4);
-      padding: 1.25rem;
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border-color);
-      max-height: 400px;
-      overflow-y: auto;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(0, 0, 0, 0.25);
+      flex-wrap: wrap;
+      gap: 0.75rem;
     }
 
     .modal-close {
@@ -792,15 +808,353 @@
       border: none;
       color: var(--text-muted);
       cursor: pointer;
-      padding: 0.25rem;
+      padding: 0.35rem;
       border-radius: var(--radius-sm);
       display: flex;
       align-items: center;
       justify-content: center;
+      transition: var(--transition);
     }
 
     .modal-close:hover {
       color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    /* Form Design Inside Modal */
+    .form-section {
+      margin-bottom: 1.75rem;
+    }
+
+    .form-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .form-section-title {
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      margin-bottom: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.375rem;
+    }
+
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .form-label {
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .form-label .sub-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    .form-control {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 0.6rem 0.85rem;
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 0.875rem;
+      outline: none;
+      transition: var(--transition);
+      width: 100%;
+    }
+
+    .form-control:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+
+    .form-control.is-invalid {
+      border-color: var(--danger);
+      box-shadow: 0 0 0 2px var(--danger-glow);
+    }
+
+    .form-helper {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .form-helper.error {
+      color: #f87171;
+    }
+
+    /* Toggle Switch */
+    .switch-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+      user-select: none;
+      margin-top: 0.25rem;
+    }
+
+    .switch-slider {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 9999px;
+      transition: var(--transition);
+      border: 1px solid var(--border-color);
+    }
+
+    .switch-slider::before {
+      content: "";
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      left: 2px;
+      top: 2px;
+      background: #9ca3af;
+      border-radius: 50%;
+      transition: var(--transition);
+    }
+
+    input[type="checkbox"]:checked + .switch-slider {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    input[type="checkbox"]:checked + .switch-slider::before {
+      transform: translateX(20px);
+      background: #ffffff;
+    }
+
+    /* Range / Min-Max Input Row */
+    .range-inputs {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Boosts & Dynamic Key-Values */
+    .keyvalue-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.5rem;
+    }
+
+    .keyvalue-table th, .keyvalue-table td {
+      padding: 0.5rem;
+      border: 1px solid var(--border-color);
+    }
+
+    .keyvalue-table th {
+      background: rgba(0, 0, 0, 0.2);
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+    }
+
+    /* Raw JSON Editor Tab */
+    .raw-editor-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      height: 100%;
+    }
+
+    .raw-editor-textarea {
+      width: 100%;
+      height: 380px;
+      background: #060911;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      color: #e0e7ff;
+      font-size: 0.8125rem;
+      line-height: 1.6;
+      resize: vertical;
+      outline: none;
+      tab-size: 2;
+      transition: var(--transition);
+    }
+
+    .raw-editor-textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+
+    .json-validation-status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8125rem;
+      padding: 0.5rem 0.85rem;
+      border-radius: var(--radius-sm);
+    }
+
+    .json-validation-status.valid {
+      background: var(--success-glow);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .json-validation-status.invalid {
+      background: var(--danger-glow);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    /* Diff View Styling */
+    .diff-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .diff-summary-card {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 0.875rem 1.25rem;
+      font-size: 0.875rem;
+    }
+
+    .diff-box {
+      background: #060911;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 0.875rem 0;
+      font-size: 0.8125rem;
+      max-height: 420px;
+      overflow-y: auto;
+    }
+
+    .diff-line {
+      display: flex;
+      padding: 0.15rem 1rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .diff-line.diff-add {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+    }
+
+    .diff-line.diff-del {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+    }
+
+    .diff-line.diff-mod {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+    }
+
+    .diff-line-num {
+      width: 40px;
+      color: var(--text-muted);
+      user-select: none;
+      flex-shrink: 0;
+    }
+
+    .diff-line-prefix {
+      width: 20px;
+      font-weight: 700;
+      user-select: none;
+      flex-shrink: 0;
+    }
+
+    /* Game Card Live Preview */
+    .game-card-preview {
+      background: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.12), rgba(17, 24, 39, 0.95));
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      max-width: 480px;
+      margin: 0 auto;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .card-sprite-large {
+      width: 72px;
+      height: 72px;
+      border-radius: var(--radius-md);
+      background: rgba(0, 0, 0, 0.5);
+      border: 2px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.6);
+    }
+
+    .card-sprite-large img {
+      max-width: 56px;
+      max-height: 56px;
+      image-rendering: pixelated;
+    }
+
+    .card-title-name {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .card-tags {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      flex-wrap: wrap;
+      margin-top: 0.35rem;
+    }
+
+    .card-stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .card-stat-pill {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 0.6rem 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
     }
 
     /* Toast Notification */
@@ -810,18 +1164,18 @@
       right: 2rem;
       background: #1e293b;
       color: #f8fafc;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 0.75rem 1.25rem;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 0.85rem 1.35rem;
       border-radius: var(--radius-md);
       font-size: 0.875rem;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+      gap: 0.65rem;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
       transform: translateY(100px);
       opacity: 0;
       transition: var(--transition);
-      z-index: 200;
+      z-index: 2000;
     }
 
     .toast.show {
@@ -843,8 +1197,8 @@
       font-size: 0.8125rem;
     }
 
-    /* Responsive */
-    @media (max-width: 840px) {
+    /* Responsive adjustments */
+    @media (max-width: 860px) {
       .filter-bar {
         grid-template-columns: 1fr 1fr;
       }
@@ -854,12 +1208,15 @@
       .hide-mobile {
         display: none;
       }
+      .modal-content {
+        max-height: 95vh;
+      }
     }
   </style>
 </head>
 <body>
 
-  <!-- Hidden File Input for Manual Local JSON Loading -->
+  <!-- Hidden File Input for Manual JSON Loading -->
   <input type="file" id="local-file-input" accept=".json" style="display: none;" onchange="handleFileInput(event)">
 
   <div class="container">
@@ -875,7 +1232,10 @@
             </svg>
           </div>
           <div>
-            <h1 class="brand-title">Inventory Rampager Data CDN</h1>
+            <h1 class="brand-title">
+              Inventory Rampager
+              <span class="badge-studio">Data Studio</span>
+            </h1>
           </div>
         </div>
 
@@ -885,27 +1245,56 @@
             <span id="badge-source-text">Đang kết nối...</span>
           </div>
 
-          <button class="btn btn-secondary" onclick="document.getElementById('local-file-input').click()" title="Mở tệp JSON từ máy tính nếu không dùng server">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-            Tải JSON từ máy
+          <button class="btn btn-primary" onclick="openNewItemModal()" title="Tạo mới một vật phẩm">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            + Thêm vật phẩm
           </button>
 
-          <button class="btn btn-secondary" onclick="reloadDataset()" title="Tải lại dữ liệu">
+          <button class="btn btn-success" onclick="openExportModal()" title="Xuất dataset JSON và version.json cập nhật">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Xuất bản / Save Package
+          </button>
+
+          <button class="btn btn-secondary" onclick="document.getElementById('local-file-input').click()" title="Nạp tệp JSON từ máy">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            Nạp tệp JSON
+          </button>
+
+          <button class="btn btn-secondary" onclick="reloadDataset()" title="Tải lại từ server">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
             Làm mới
           </button>
         </div>
       </div>
       <p class="header-desc">
-        Static asset repository and dataset manifest for Inventory Rampager. Tra cứu danh sách vật phẩm, thông số chỉ số, nguyên tố, sprite và phiên bản dữ liệu game.
+        Môi trường quản lý, chỉnh sửa an toàn và tạo manifest cho vật phẩm game Inventory Rampager. Hỗ trợ xem trước thẻ trang bị, so sánh Diff trước khi lưu và xuất bản phiên bản cập nhật.
       </p>
     </header>
+
+    <!-- Change Tracker Bar (Visible when there are unsaved edits) -->
+    <div class="change-tracker-bar" id="change-tracker-bar" style="display: none;">
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        <span>Có <strong><span id="tracker-change-count">0</span> thay đổi chưa xuất bản</strong> trong phiên làm việc hiện tại.</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <button class="btn btn-sm btn-secondary" onclick="toggleModifiedOnlyFilter()">
+          <span id="tracker-filter-btn-text">Lọc mục đã sửa</span>
+        </button>
+        <button class="btn btn-sm btn-danger" onclick="revertAllChanges()">
+          Khôi phục gốc
+        </button>
+        <button class="btn btn-sm btn-success" onclick="openExportModal()">
+          Xuất bản ngay
+        </button>
+      </div>
+    </div>
 
     <!-- Notice Banner for file:// protocol if active -->
     <div class="banner" id="file-protocol-banner" style="display: none;">
       <div class="banner-content">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-        <span id="protocol-banner-msg">Bạn đang mở qua giao thức <code>file://</code>. Đã tự động kích hoạt chế độ Fallback trực tuyến / Kéo thả tệp.</span>
+        <span id="protocol-banner-msg">Bạn đang mở trang qua <code>file://</code>. Tính năng nạp và xuất file JSON hoạt động hoàn toàn offline!</span>
       </div>
       <div style="display: flex; gap: 0.5rem;">
         <button class="btn btn-outline-accent" onclick="document.getElementById('local-file-input').click()">Chọn tệp item-*.json</button>
@@ -922,81 +1311,42 @@
       <div class="stat-card">
         <span class="stat-label">Total Items</span>
         <span class="stat-value" id="val-total-items">--</span>
-        <span class="stat-sub" id="val-types-breakdown">Đang tải danh mục...</span>
+        <span class="stat-sub" id="val-types-breakdown">Đang tải...</span>
       </div>
       <div class="stat-card">
-        <span class="stat-label">Weapons / Armors</span>
-        <span class="stat-value" id="val-gear-count">--</span>
-        <span class="stat-sub" id="val-upcoming-count">-- Upcoming items</span>
+        <span class="stat-label">Trạng thái chỉnh sửa</span>
+        <span class="stat-value" id="val-edit-status">0 mục</span>
+        <span class="stat-sub" id="val-edit-sub">Đồng bộ với bản nạp</span>
       </div>
       <div class="stat-card">
-        <span class="stat-label">Nguồn dữ liệu hiện tại</span>
-        <span class="stat-value" style="font-size: 1.1rem; word-break: break-all;" id="val-data-source">--</span>
-        <span class="stat-sub" id="val-data-sub">Ready for client consumption</span>
+        <span class="stat-label">Nguồn dữ liệu hiện hành</span>
+        <span class="stat-value font-mono" style="font-size: 1.05rem; word-break: break-all;" id="val-data-source">--</span>
+        <span class="stat-sub" id="val-data-sub">Ready for Data Studio</span>
       </div>
     </div>
 
-    <!-- API Endpoints Section -->
-    <div class="section-title">
-      <div class="section-title-left">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
-          <polyline points="16 18 22 12 16 6"></polyline>
-          <polyline points="8 6 2 12 8 18"></polyline>
-        </svg>
-        API Endpoints & Manifest URLs
-      </div>
-    </div>
-
-    <div class="endpoints-list">
-      <div class="endpoint-card">
-        <div class="endpoint-left">
-          <span class="method-badge">GET</span>
-          <code class="endpoint-path" id="version-endpoint-text">/version.json</code>
-          <span class="endpoint-desc">Version manifest & active dataset pointer</span>
-        </div>
-        <div class="endpoint-actions">
-          <button class="btn btn-secondary" onclick="copyFullUrl('version.json')">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-            Copy URL
+    <!-- Studio Toolbar & Filters -->
+    <div class="studio-toolbar">
+      <div class="toolbar-row">
+        <div class="toolbar-left">
+          <button class="btn btn-secondary btn-sm" id="btn-undo" onclick="undo()" disabled title="Hoàn tác thao tác vừa làm (Ctrl+Z)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v6h6"></path><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"></path></svg>
+            Undo
           </button>
-          <a href="version.json" id="open-version-link" target="_blank" class="btn btn-primary">Open JSON</a>
-        </div>
-      </div>
-
-      <div class="endpoint-card">
-        <div class="endpoint-left">
-          <span class="method-badge">GET</span>
-          <code class="endpoint-path" id="active-item-endpoint">/item-[version].json</code>
-          <span class="endpoint-desc">Full items dataset containing stats, elements & sprites</span>
-        </div>
-        <div class="endpoint-actions">
-          <button class="btn btn-secondary" id="copy-dataset-btn" onclick="copyDatasetUrl()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-            Copy URL
+          <button class="btn btn-secondary btn-sm" id="btn-redo" onclick="redo()" disabled title="Làm lại thao tác vừa hoàn tác (Ctrl+Y)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 7v6h-6"></path><path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3L21 13"></path></svg>
+            Redo
           </button>
-          <a href="#" id="open-dataset-link" target="_blank" class="btn btn-primary">Open JSON</a>
         </div>
-      </div>
-    </div>
 
-    <!-- Explorer Section -->
-    <div class="explorer-header">
-      <div class="section-title" style="margin-bottom: 0;">
-        <div class="section-title-left">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--cyan);">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
-          Item Dataset Explorer
-        </div>
-        <div class="explorer-subbar-actions">
-          <button class="btn btn-secondary" onclick="exportFilteredJson()">
+        <div class="toolbar-right">
+          <button class="btn btn-secondary btn-sm" onclick="exportFilteredJson()">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
             Xuất JSON đang lọc
           </button>
         </div>
       </div>
-      
+
       <div class="filter-bar">
         <div class="search-input-wrap">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1010,6 +1360,8 @@
           <option value="all">Tất cả loại (Type)</option>
           <option value="weapon">Weapon</option>
           <option value="armor">Armor</option>
+          <option value="supply">Supply</option>
+          <option value="artifact">Artifact</option>
         </select>
 
         <select id="filter-subtype" class="select-filter">
@@ -1018,19 +1370,27 @@
 
         <select id="filter-element" class="select-filter">
           <option value="all">Tất cả hệ (Element)</option>
-          <option value="fire">Fire</option>
           <option value="water">Water</option>
+          <option value="fire">Fire</option>
           <option value="wind">Wind</option>
           <option value="earth">Earth</option>
           <option value="light">Light</option>
           <option value="dark">Dark</option>
+          <option value="air">Air</option>
           <option value="none">None</option>
         </select>
 
         <select id="filter-upcoming" class="select-filter">
-          <option value="all">Tất cả trạng thái</option>
+          <option value="all">Tất cả phát hành</option>
           <option value="upcoming">Upcoming Only</option>
           <option value="released">Released Only</option>
+        </select>
+
+        <select id="filter-edit-state" class="select-filter">
+          <option value="all">Tất cả trạng thái sửa</option>
+          <option value="modified">Chỉ mục đã sửa</option>
+          <option value="new">Chỉ mục mới tạo</option>
+          <option value="unmodified">Chỉ mục nguyên bản</option>
         </select>
 
         <select id="filter-sort" class="select-filter">
@@ -1043,7 +1403,7 @@
         </select>
       </div>
 
-      <div class="explorer-subbar">
+      <div class="toolbar-row" style="margin-top: 0.25rem; font-size: 0.8125rem; color: var(--text-secondary);">
         <span id="filter-count-summary">Đang hiển thị -- vật phẩm</span>
         <div style="display: flex; align-items: center; gap: 0.5rem;">
           <span>Hiển thị:</span>
@@ -1062,19 +1422,16 @@
       <table class="items-table">
         <thead>
           <tr>
-            <th>Item</th>
+            <th>Item & Trạng thái</th>
             <th>Type / Subtype</th>
             <th>Element</th>
             <th class="hide-mobile">Key Stats & Boosts</th>
-            <th style="text-align: right;">Action</th>
+            <th style="text-align: right; min-width: 180px;">Actions</th>
           </tr>
         </thead>
         <tbody id="items-tbody">
           <tr>
             <td colspan="5" class="empty-state">
-              <div class="empty-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-              </div>
               <p>Đang tải dữ liệu vật phẩm...</p>
             </td>
           </tr>
@@ -1085,81 +1442,400 @@
       <div class="pagination-bar" id="pagination-container" style="display: none;">
         <span id="page-info" style="font-size: 0.8125rem; color: var(--text-muted);">Trang 1 / 1</span>
         <div style="display: flex; gap: 0.5rem;">
-          <button class="btn btn-secondary" id="btn-prev-page" onclick="changePage(-1)">Trước</button>
-          <button class="btn btn-secondary" id="btn-next-page" onclick="changePage(1)">Tiếp</button>
+          <button class="btn btn-secondary btn-sm" id="btn-prev-page" onclick="changePage(-1)">Trước</button>
+          <button class="btn btn-secondary btn-sm" id="btn-next-page" onclick="changePage(1)">Tiếp</button>
         </div>
       </div>
     </div>
 
     <!-- Footer -->
     <footer>
-      <p>Inventory Rampager &copy; Data Repository CDN. Static asset delivery & dataset manifest.</p>
+      <p>Inventory Rampager &copy; Data Studio & Manifest CDN Hub. Static dataset editor with safe validation.</p>
       <p>Source Repo: <a href="https://github.com/sdroimod/Inventory-Rampager-Data" target="_blank" style="color: var(--accent); text-decoration: none;">sdroimod/Inventory-Rampager-Data</a></p>
     </footer>
   </div>
 
-  <!-- Detail & JSON Modal -->
-  <div class="modal-backdrop" id="json-modal" onclick="closeModal(event)">
+  <!-- ==================== ITEM STUDIO / DATA EDITOR MODAL ==================== -->
+  <div class="modal-backdrop" id="editor-modal" onclick="closeEditorModal(event)">
     <div class="modal-content" onclick="event.stopPropagation()">
       <div class="modal-header">
         <div class="modal-title-group">
-          <div class="item-sprite-box" id="modal-sprite-box" style="width: 36px; height: 36px;">
-            <img id="modal-sprite-img" src="" alt="" style="max-width: 28px; max-height: 28px;">
+          <div class="item-sprite-box" id="editor-header-sprite-box" style="width: 38px; height: 38px;">
+            <img id="editor-header-sprite-img" src="" alt="" style="max-width: 30px; max-height: 30px;">
           </div>
           <div>
-            <span class="modal-title" id="modal-item-title">Item Details</span>
-            <div id="modal-item-id" style="font-size: 0.75rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;"></div>
+            <span class="modal-title" id="editor-modal-title">Item Data Studio</span>
+            <div id="editor-modal-sub" class="font-mono" style="font-size: 0.75rem; color: var(--text-muted);">Chỉnh sửa an toàn dữ liệu vật phẩm</div>
           </div>
         </div>
-        <button class="modal-close" onclick="closeModal()">
+        <button class="modal-close" onclick="closeEditorModal()">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </button>
       </div>
 
       <div class="modal-tabs">
-        <button class="tab-btn active" id="tab-btn-spec" onclick="switchModalTab('spec')">Tổng quan (Overview)</button>
-        <button class="tab-btn" id="tab-btn-json" onclick="switchModalTab('json')">Mã JSON thuần (Raw)</button>
+        <button class="tab-btn active" id="tab-btn-form" onclick="switchEditorTab('form')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+          Form trực quan
+        </button>
+        <button class="tab-btn" id="tab-btn-raw" onclick="switchEditorTab('raw')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+          Mã JSON thuần (Raw)
+        </button>
+        <button class="tab-btn" id="tab-btn-diff" onclick="switchEditorTab('diff')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          So sánh thay đổi (Diff)
+        </button>
+        <button class="tab-btn" id="tab-btn-preview" onclick="switchEditorTab('preview')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
+          Live Card Preview
+        </button>
       </div>
 
-      <div class="modal-body" id="modal-spec-view">
-        <div id="modal-spec-content"></div>
+      <!-- Tab 1: Visual Form View -->
+      <div class="modal-body" id="editor-view-form">
+        <!-- Section: Basic Information -->
+        <div class="form-section">
+          <div class="form-section-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+            Thông tin cơ bản (Core Properties)
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label" for="inp-id">
+                Item ID <span class="sub-label">(Duy nhất, slug)</span>
+              </label>
+              <input type="text" id="inp-id" class="form-control font-mono" placeholder="abyssal_blade_sword" oninput="handleIdInputChange()">
+              <div id="inp-id-error" class="form-helper error" style="display: none;"></div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="inp-name">Tên hiển thị (Name)</label>
+              <input type="text" id="inp-name" class="form-control" placeholder="Abyssal Blade Sword" oninput="syncFormToCurrentDraft()">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="inp-type">Phân loại (Type)</label>
+              <input type="text" id="inp-type" class="form-control" list="type-datalist" placeholder="weapon" oninput="syncFormToCurrentDraft()">
+              <datalist id="type-datalist">
+                <option value="weapon">
+                <option value="armor">
+                <option value="supply">
+                <option value="artifact">
+                <option value="material">
+              </datalist>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="inp-subtype">Phân loại phụ (SubType)</label>
+              <input type="text" id="inp-subtype" class="form-control" list="subtype-datalist" placeholder="sword" oninput="syncFormToCurrentDraft()">
+              <datalist id="subtype-datalist">
+                <option value="sword">
+                <option value="dagger">
+                <option value="bow">
+                <option value="staff">
+                <option value="shield">
+                <option value="helmet">
+                <option value="chestplate">
+                <option value="essence">
+              </datalist>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="inp-element">Nguyên tố (Element)</label>
+              <select id="inp-element" class="form-control" onchange="syncFormToCurrentDraft()">
+                <option value="water">💧 Water</option>
+                <option value="fire">🔥 Fire</option>
+                <option value="wind">🍃 Wind</option>
+                <option value="earth">🛡️ Earth</option>
+                <option value="light">✨ Light</option>
+                <option value="dark">🔮 Dark</option>
+                <option value="air">💨 Air</option>
+                <option value="none">⚪ None</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="inp-sprite">Đường dẫn Sprite</label>
+              <input type="text" id="inp-sprite" class="form-control font-mono" placeholder="/sprites/weapons/sword_1.png" oninput="syncFormToCurrentDraft()">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="inp-levelmax">Cấp tối đa (LevelMax)</label>
+              <input type="number" id="inp-levelmax" class="form-control font-mono" min="0" max="100" placeholder="15" oninput="syncFormToCurrentDraft()">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="inp-cooldown">
+                Hồi chiêu (Cooldown) <span class="sub-label" id="cooldown-sec-preview">0.65s</span>
+              </label>
+              <input type="number" id="inp-cooldown" class="form-control font-mono" min="0" step="10" placeholder="650" oninput="syncFormToCurrentDraft()">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Trạng thái phát hành (Upcoming)</label>
+              <label class="switch-wrap">
+                <input type="checkbox" id="inp-upcoming" style="display:none;" onchange="syncFormToCurrentDraft()">
+                <div class="switch-slider"></div>
+                <span style="font-size: 0.8125rem;">Đánh dấu là vật phẩm sắp ra mắt (Upcoming)</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: Combat Stats -->
+        <div class="form-section">
+          <div class="form-section-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+            Chỉ số chiến đấu (Combat Stats)
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Sát thương (Damage) [Min - Max]</label>
+              <div class="range-inputs">
+                <input type="number" id="inp-dmg-min" class="form-control font-mono" placeholder="Min" min="0" oninput="syncFormToCurrentDraft()">
+                <span style="color: var(--text-muted);">-</span>
+                <input type="number" id="inp-dmg-max" class="form-control font-mono" placeholder="Max" min="0" oninput="syncFormToCurrentDraft()">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Giáp (Armor) [Min - Max]</label>
+              <div class="range-inputs">
+                <input type="number" id="inp-arm-min" class="form-control font-mono" placeholder="Min" min="0" oninput="syncFormToCurrentDraft()">
+                <span style="color: var(--text-muted);">-</span>
+                <input type="number" id="inp-arm-max" class="form-control font-mono" placeholder="Max" min="0" oninput="syncFormToCurrentDraft()">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="inp-pierce">Xuyên phá (Pierce)</label>
+              <input type="number" id="inp-pierce" class="form-control font-mono" min="0" placeholder="1" oninput="syncFormToCurrentDraft()">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="inp-flightspeed">Tốc độ bay (Flight Speed)</label>
+              <input type="number" id="inp-flightspeed" class="form-control font-mono" step="0.1" placeholder="18.0" oninput="syncFormToCurrentDraft()">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="inp-knockback">Đẩy lùi (Knockback)</label>
+              <input type="number" id="inp-knockback" class="form-control font-mono" step="0.1" placeholder="0.0" oninput="syncFormToCurrentDraft()">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="inp-explosion">Bán kính nổ (Explosion Range)</label>
+              <input type="number" id="inp-explosion" class="form-control font-mono" step="1" placeholder="290" oninput="syncFormToCurrentDraft()">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Sát thương lan khi xuyên</label>
+              <label class="switch-wrap">
+                <input type="checkbox" id="inp-piercearea" style="display:none;" onchange="syncFormToCurrentDraft()">
+                <div class="switch-slider"></div>
+                <span style="font-size: 0.8125rem;">enablePierceAreaDamage</span>
+              </label>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Xuyên qua đạn địch</label>
+              <label class="switch-wrap">
+                <input type="checkbox" id="inp-persistproj" style="display:none;" onchange="syncFormToCurrentDraft()">
+                <div class="switch-slider"></div>
+                <span style="font-size: 0.8125rem;">persistAgainstProjectile</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: Status & Boosts -->
+        <div class="form-section">
+          <div class="form-section-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            Hiệu ứng & Chỉ số bổ trợ (Status & Boosts)
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Hiệu ứng bất lợi (Status Effects)</label>
+              <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.25rem;">
+                <label class="switch-wrap">
+                  <input type="checkbox" id="inp-status-poison" style="display:none;" onchange="syncFormToCurrentDraft()">
+                  <div class="switch-slider"></div>
+                  <span style="font-size: 0.8125rem;">🧪 Độc tố (Poison)</span>
+                </label>
+                <label class="switch-wrap">
+                  <input type="checkbox" id="inp-status-frost" style="display:none;" onchange="syncFormToCurrentDraft()">
+                  <div class="switch-slider"></div>
+                  <span style="font-size: 0.8125rem;">❄️ Băng giá (Frost)</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group full-width">
+              <div style="display: flex; align-items: center; justify-content: space-between;">
+                <label class="form-label">Chỉ số tăng cường (Boosts Multiplier)</label>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="addBoostRow()">+ Thêm Boost</button>
+              </div>
+              <div id="boosts-container" style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem;">
+                <!-- Dynamically populated rows -->
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="modal-body" id="modal-json-view" style="display: none;">
-        <div style="display: flex; justify-content: flex-end; margin-bottom: 0.75rem;">
-          <button class="btn btn-secondary" onclick="copyCurrentModalJson()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-            Sao chép JSON
+      <!-- Tab 2: Raw Code View -->
+      <div class="modal-body" id="editor-view-raw" style="display: none;">
+        <div class="raw-editor-wrap">
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+            <div id="raw-json-status" class="json-validation-status valid">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Cú pháp JSON hợp lệ</span>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn btn-secondary btn-sm" onclick="beautifyRawJson()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></svg>
+                Định dạng Beautify
+              </button>
+              <button class="btn btn-secondary btn-sm" onclick="copyRawJson()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                Sao chép
+              </button>
+            </div>
+          </div>
+          <textarea id="raw-json-textarea" class="raw-editor-textarea font-mono" spellcheck="false" oninput="handleRawJsonChange()"></textarea>
+        </div>
+      </div>
+
+      <!-- Tab 3: Diff Comparison View -->
+      <div class="modal-body" id="editor-view-diff" style="display: none;">
+        <div class="diff-container">
+          <div class="diff-summary-card" id="diff-summary-box">
+            Đang tính toán thay đổi...
+          </div>
+          <div class="diff-box font-mono" id="diff-lines-container">
+            <!-- Populated with colored diff lines -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 4: Live Game Card Preview -->
+      <div class="modal-body" id="editor-view-preview" style="display: none;">
+        <div class="game-card-preview" id="live-card-preview-container">
+          <div class="card-top">
+            <div class="card-sprite-large" id="live-preview-sprite-box">
+              <img id="live-preview-sprite-img" src="" alt="">
+              <span id="live-preview-fallback-icon" class="elem-fallback-icon" style="display: none; font-size: 2rem;">⚪</span>
+            </div>
+            <div>
+              <div class="card-title-name" id="live-preview-name">Item Name</div>
+              <div class="font-mono" style="font-size: 0.75rem; color: var(--text-muted);" id="live-preview-id">id: item_id</div>
+              <div class="card-tags" id="live-preview-tags"></div>
+            </div>
+          </div>
+
+          <div class="card-stats-grid" id="live-preview-stats-grid"></div>
+
+          <div id="live-preview-boosts-container" style="margin-top: 1rem;"></div>
+        </div>
+      </div>
+
+      <!-- Modal Footer Action Bar -->
+      <div class="modal-footer">
+        <div style="display: flex; gap: 0.5rem;">
+          <button class="btn btn-secondary" onclick="closeEditorModal()">Huỷ</button>
+          <button class="btn btn-warning" id="btn-revert-current-item" onclick="revertCurrentItemInEditor()" style="display: none;">
+            Khôi phục bản gốc
           </button>
         </div>
-        <pre class="json-code" id="modal-json-content"></pre>
+
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <button class="btn btn-outline-accent" onclick="switchEditorTab('diff')">
+            Xem trước Diff
+          </button>
+          <button class="btn btn-success" id="btn-apply-editor" onclick="applyEditorChanges()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            Áp dụng thay đổi
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== EXPORT / SAVE PACKAGE MODAL ==================== -->
+  <div class="modal-backdrop" id="export-modal" onclick="closeExportModal(event)">
+    <div class="modal-content" style="max-width: 680px;" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <div class="brand-icon" style="width: 36px; height: 36px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          </div>
+          <div>
+            <span class="modal-title">Xuất bản Manifest & Dataset Package</span>
+            <div class="font-mono" style="font-size: 0.75rem; color: var(--text-muted);">Tạo phiên bản mới có Unix timestamp và version.json tương ứng</div>
+          </div>
+        </div>
+        <button class="modal-close" onclick="closeExportModal()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+          <div class="form-group">
+            <label class="form-label">Tên tệp Dataset mới</label>
+            <input type="text" id="export-dataset-filename" class="form-control font-mono" value="item-1786863158.json">
+            <span class="form-helper">Mặc định tính theo Unix timestamp hiện tại để hỗ trợ Cache-busting chuẩn xác.</span>
+          </div>
+
+          <div style="background: rgba(0, 0, 0, 0.35); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem;">
+            <span class="stat-label" style="display: block; margin-bottom: 0.5rem;">Nội dung version.json dự kiến</span>
+            <pre id="export-version-preview" class="font-mono" style="font-size: 0.8125rem; color: #a5b4fc; background: #060911; padding: 0.75rem; border-radius: var(--radius-sm);"></pre>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+            <div class="stat-card" style="padding: 1rem;">
+              <span class="stat-label">Tổng số item</span>
+              <span class="stat-value" id="export-stat-total" style="font-size: 1.35rem;">--</span>
+            </div>
+            <div class="stat-card" style="padding: 1rem;">
+              <span class="stat-label">Mục đã sửa / mới</span>
+              <span class="stat-value" id="export-stat-modified" style="font-size: 1.35rem; color: #fbbf24;">--</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeExportModal()">Đóng</button>
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <button class="btn btn-secondary" onclick="copyExportedJsonToClipboard()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            Sao chép Dataset JSON
+          </button>
+          <button class="btn btn-success" onclick="downloadExportBundle()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Tải về trọn gói (Dataset + version.json)
+          </button>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- Toast Notification -->
   <div class="toast" id="toast">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M20 6L9 17l-5-5"></path></svg>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><path d="M20 6L9 17l-5-5"></path></svg>
     <span id="toast-msg">Đã sao chép!</span>
   </div>
 
+  <!-- JavaScript Codebase -->
   <script>
-    // State
-    let allItems = [];
-    let activeVersion = '1786863158';
-    let datasetFileName = 'item-1786863158.json';
-    let currentSourceMode = 'local'; // 'local' | 'github_raw' | 'jsdelivr' | 'file_reader'
-    let currentFilteredItems = [];
-    let currentPage = 1;
-    let pageSize = 50;
-    let currentModalItem = null;
-
-    // Sprite CDN base options for fallback
+    // Constants
     const SPRITE_CDN_PRIMARY = 'https://raw.githubusercontent.com/sdroimod/Inventory-Rampager/main/public';
     const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/sdroimod/Inventory-Rampager-Data/main/';
     const JSDELIVR_BASE = 'https://cdn.jsdelivr.net/gh/sdroimod/Inventory-Rampager-Data@main/';
+    const LOCAL_STORAGE_DRAFT_KEY = 'inventory_rampager_studio_draft_v1';
 
-    // Element Icons & Colors
     const ELEMENT_ICONS = {
       fire: '🔥',
       water: '💧',
@@ -1167,25 +1843,32 @@
       earth: '🛡️',
       light: '✨',
       dark: '🔮',
+      air: '💨',
       none: '⚪'
     };
 
-    /**
-     * Resolve valid relative URL safely
-     */
-    function resolveRelativeUrl(path) {
-      if (!path) return '';
-      if (path.startsWith('http://') || path.startsWith('https://')) return path;
-      const cleanPath = path.startsWith('/') ? path.substring(1) : path;
-      try {
-        return new URL(cleanPath, window.location.href).href;
-      } catch (e) {
-        return cleanPath;
-      }
-    }
+    // State Management
+    let originalItems = [];      // Snapshot of loaded dataset (immutable reference)
+    let workingItems = [];       // Active working dataset in memory
+    let activeVersion = '1786863158';
+    let datasetFileName = 'item-1786863158.json';
+    let currentSourceMode = 'local';
+    let currentFilteredItems = [];
+    let currentPage = 1;
+    let pageSize = 50;
+
+    // History for Undo/Redo
+    let historyUndoStack = [];
+    let historyRedoStack = [];
+
+    // Editor Modal Active State
+    let editingItemOriginal = null; // Original item before editing (or null if new)
+    let editingDraftItem = null;    // Current live draft object
+    let isCreatingNew = false;
+    let isRawJsonValid = true;
 
     /**
-     * Main Initialization Pipeline with Multi-Strategy Fallback
+     * Initialization Pipeline
      */
     async function init() {
       const isFileProto = window.location.protocol === 'file:';
@@ -1200,34 +1883,41 @@
       if (!isFileProto) {
         try {
           const success = await tryFetchLocal();
-          if (success) return;
+          if (success) {
+            checkAndPromptLocalStorageDraft();
+            return;
+          }
         } catch (e) {
-          console.warn('[CDN] Local fetch failed, trying remote CDN fallback...', e);
+          console.warn('[DataStudio] Local fetch failed, fallback to CDN...', e);
         }
       }
 
-      // Strategy 2: Try GitHub Raw CDN / jsDelivr CDN
+      // Strategy 2: GitHub Raw CDN
       try {
         const success = await tryFetchGitHubRaw();
-        if (success) return;
+        if (success) {
+          checkAndPromptLocalStorageDraft();
+          return;
+        }
       } catch (e) {
-        console.warn('[CDN] GitHub Raw fetch failed, trying jsDelivr...', e);
+        console.warn('[DataStudio] GitHub Raw fetch failed, trying jsDelivr...', e);
       }
 
+      // Strategy 3: jsDelivr CDN
       try {
         const success = await tryFetchJsDelivr();
-        if (success) return;
+        if (success) {
+          checkAndPromptLocalStorageDraft();
+          return;
+        }
       } catch (e) {
-        console.warn('[CDN] jsDelivr fetch failed.', e);
+        console.warn('[DataStudio] jsDelivr fetch failed.', e);
       }
 
-      // Strategy 3: Render Drag-and-Drop & Local File Selector Prompt
+      // Strategy 4: Show Drag-and-Drop Prompt
       showLocalFilePrompt(isFileProto);
     }
 
-    /**
-     * Strategy 1: Fetch local relative files
-     */
     async function tryFetchLocal() {
       const vRes = await fetch('version.json?t=' + Date.now());
       if (!vRes.ok) throw new Error('HTTP ' + vRes.status + ' on version.json');
@@ -1242,17 +1932,14 @@
       const items = await itemRes.json();
 
       currentSourceMode = 'local';
-      setSourceStatus('success', 'Local Server / GitHub Pages Live');
+      setSourceStatus('success', 'Local Server / Pages Live');
       document.getElementById('val-data-source').textContent = datasetFileName;
-      document.getElementById('val-data-sub').textContent = 'Loaded from relative origin';
+      document.getElementById('val-data-sub').textContent = 'Loaded from local origin';
 
       loadDatasetData(vData, items);
       return true;
     }
 
-    /**
-     * Strategy 2A: Fetch from GitHub Raw
-     */
     async function tryFetchGitHubRaw() {
       const vRes = await fetch(GITHUB_RAW_BASE + 'version.json');
       if (!vRes.ok) throw new Error('GitHub Raw version.json failed: ' + vRes.status);
@@ -1267,7 +1954,7 @@
       const items = await itemRes.json();
 
       currentSourceMode = 'github_raw';
-      setSourceStatus('warning', 'GitHub Raw CDN (Online Fallback)');
+      setSourceStatus('warning', 'GitHub Raw CDN');
       document.getElementById('val-data-source').textContent = 'GitHub Raw CDN';
       document.getElementById('val-data-sub').textContent = 'github.com/sdroimod/Inventory-Rampager-Data';
 
@@ -1275,9 +1962,6 @@
       return true;
     }
 
-    /**
-     * Strategy 2B: Fetch from jsDelivr CDN
-     */
     async function tryFetchJsDelivr() {
       const vRes = await fetch(JSDELIVR_BASE + 'version.json');
       if (!vRes.ok) throw new Error('jsDelivr version.json failed: ' + vRes.status);
@@ -1300,15 +1984,17 @@
       return true;
     }
 
-    /**
-     * Populate UI with parsed dataset
-     */
     function loadDatasetData(vData, items) {
       if (!Array.isArray(items)) {
-        throw new Error('Dữ liệu JSON không phải mảng vật phẩm hợp lệ.');
+        throw new Error('Dữ liệu JSON không phải danh sách mảng vật phẩm.');
       }
 
-      allItems = items;
+      originalItems = JSON.parse(JSON.stringify(items));
+      workingItems = JSON.parse(JSON.stringify(items));
+      historyUndoStack = [];
+      historyRedoStack = [];
+      updateUndoRedoButtons();
+
       activeVersion = (vData && vData.version) ? vData.version : activeVersion;
 
       // Update version display
@@ -1320,40 +2006,18 @@
         document.getElementById('val-timestamp').textContent = 'Unix: ' + activeVersion;
       }
 
-      // Endpoints UI update
-      document.getElementById('active-item-endpoint').textContent = '/' + datasetFileName;
-      const resolvedItemUrl = resolveRelativeUrl(datasetFileName);
-      document.getElementById('open-dataset-link').href = resolvedItemUrl;
-      document.getElementById('open-version-link').href = resolveRelativeUrl('version.json');
-
-      // Populate SubTypes Filter dynamically
       populateSubTypeFilter();
-
-      // Metrics calculation
-      const total = allItems.length;
-      const weapons = allItems.filter(i => (i.type || '').toLowerCase() === 'weapon').length;
-      const armors = allItems.filter(i => (i.type || '').toLowerCase() === 'armor').length;
-      const upcoming = allItems.filter(i => i.isUpcoming === true).length;
-
-      document.getElementById('val-total-items').textContent = total.toLocaleString();
-      document.getElementById('val-types-breakdown').textContent = `${weapons} weapons, ${armors} armors`;
-      document.getElementById('val-gear-count').textContent = `${weapons} / ${armors}`;
-      document.getElementById('val-upcoming-count').textContent = `${upcoming} Upcoming items`;
-
-      // Render table
+      updateMetricsAndChangeTracker();
       currentPage = 1;
       applyFiltersAndRender();
     }
 
-    /**
-     * Populate subTypes filter list dynamically from items
-     */
     function populateSubTypeFilter() {
       const subTypeSelect = document.getElementById('filter-subtype');
       const currentVal = subTypeSelect.value;
       const subTypes = new Set();
 
-      allItems.forEach(i => {
+      workingItems.forEach(i => {
         if (i.subType && typeof i.subType === 'string') {
           subTypes.add(i.subType.toLowerCase());
         }
@@ -1370,8 +2034,149 @@
       }
     }
 
+    function updateMetricsAndChangeTracker() {
+      const total = workingItems.length;
+      const weapons = workingItems.filter(i => (i.type || '').toLowerCase() === 'weapon').length;
+      const armors = workingItems.filter(i => (i.type || '').toLowerCase() === 'armor').length;
+      
+      document.getElementById('val-total-items').textContent = total.toLocaleString();
+      document.getElementById('val-types-breakdown').textContent = `${weapons} weapons, ${armors} armors`;
+
+      // Calculate modified & new items count
+      const origMap = new Map(originalItems.map(i => [i.id, i]));
+      let modifiedCount = 0;
+      let newCount = 0;
+
+      workingItems.forEach(item => {
+        if (!origMap.has(item.id)) {
+          newCount++;
+        } else {
+          const orig = origMap.get(item.id);
+          if (JSON.stringify(orig) !== JSON.stringify(item)) {
+            modifiedCount++;
+          }
+        }
+      });
+
+      const totalChanges = modifiedCount + newCount;
+      const trackerBar = document.getElementById('change-tracker-bar');
+      const trackerCount = document.getElementById('tracker-change-count');
+      const valEditStatus = document.getElementById('val-edit-status');
+      const valEditSub = document.getElementById('val-edit-sub');
+
+      if (totalChanges > 0) {
+        trackerBar.style.display = 'flex';
+        trackerCount.textContent = totalChanges;
+        valEditStatus.textContent = `${totalChanges} mục sửa`;
+        valEditStatus.style.color = '#fbbf24';
+        valEditSub.textContent = `${modifiedCount} đã sửa, ${newCount} mới`;
+        // Save draft to localStorage
+        saveDraftToLocalStorage();
+      } else {
+        trackerBar.style.display = 'none';
+        valEditStatus.textContent = '0 mục';
+        valEditStatus.style.color = 'var(--text-primary)';
+        valEditSub.textContent = 'Đồng bộ với bản nạp';
+        localStorage.removeItem(LOCAL_STORAGE_DRAFT_KEY);
+      }
+    }
+
     /**
-     * Filter, Sort and Render Table
+     * LocalStorage Auto-save & Recovery
+     */
+    function saveDraftToLocalStorage() {
+      try {
+        const draft = {
+          version: activeVersion,
+          timestamp: Date.now(),
+          items: workingItems
+        };
+        localStorage.setItem(LOCAL_STORAGE_DRAFT_KEY, JSON.stringify(draft));
+      } catch (e) {
+        console.warn('LocalStorage save failed', e);
+      }
+    }
+
+    function checkAndPromptLocalStorageDraft() {
+      try {
+        const raw = localStorage.getItem(LOCAL_STORAGE_DRAFT_KEY);
+        if (!raw) return;
+        const draft = JSON.parse(raw);
+        if (draft && Array.isArray(draft.items) && draft.items.length > 0) {
+          const isDifferent = JSON.stringify(draft.items) !== JSON.stringify(originalItems);
+          if (isDifferent) {
+            if (confirm(`Phát hiện bản nháp chỉnh sửa từ phiên làm việc trước (${draft.items.length} items). Bạn có muốn khôi phục không?`)) {
+              pushHistoryState();
+              workingItems = draft.items;
+              updateMetricsAndChangeTracker();
+              populateSubTypeFilter();
+              applyFiltersAndRender();
+              showToast('Đã khôi phục bản nháp làm việc trước!');
+            }
+          }
+        }
+      } catch (e) {
+        console.warn('Draft recovery check failed', e);
+      }
+    }
+
+    /**
+     * Undo / Redo System
+     */
+    function pushHistoryState() {
+      historyUndoStack.push(JSON.stringify(workingItems));
+      if (historyUndoStack.length > 30) historyUndoStack.shift();
+      historyRedoStack = [];
+      updateUndoRedoButtons();
+    }
+
+    function undo() {
+      if (historyUndoStack.length === 0) return;
+      const currentState = JSON.stringify(workingItems);
+      historyRedoStack.push(currentState);
+      const prevState = JSON.parse(historyUndoStack.pop());
+      workingItems = prevState;
+      updateUndoRedoButtons();
+      updateMetricsAndChangeTracker();
+      applyFiltersAndRender();
+      showToast('Đã hoàn tác (Undo)');
+    }
+
+    function redo() {
+      if (historyRedoStack.length === 0) return;
+      const currentState = JSON.stringify(workingItems);
+      historyUndoStack.push(currentState);
+      const nextState = JSON.parse(historyRedoStack.pop());
+      workingItems = nextState;
+      updateUndoRedoButtons();
+      updateMetricsAndChangeTracker();
+      applyFiltersAndRender();
+      showToast('Đã làm lại (Redo)');
+    }
+
+    function updateUndoRedoButtons() {
+      const undoBtn = document.getElementById('btn-undo');
+      const redoBtn = document.getElementById('btn-redo');
+      if (undoBtn) undoBtn.disabled = historyUndoStack.length === 0;
+      if (redoBtn) redoBtn.disabled = historyRedoStack.length === 0;
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+        // Prevent if focused in input/textarea
+        if (document.activeElement && ['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+        e.preventDefault();
+        undo();
+      }
+      if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) {
+        if (document.activeElement && ['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+        e.preventDefault();
+        redo();
+      }
+    });
+
+    /**
+     * Filter & Render Logic
      */
     function applyFiltersAndRender() {
       const query = document.getElementById('search-input').value.trim().toLowerCase();
@@ -1379,11 +2184,13 @@
       const subTypeFilter = document.getElementById('filter-subtype').value;
       const elementFilter = document.getElementById('filter-element').value;
       const upcomingFilter = document.getElementById('filter-upcoming').value;
+      const editStateFilter = document.getElementById('filter-edit-state').value;
       const sortBy = document.getElementById('filter-sort').value;
       pageSize = parseInt(document.getElementById('select-page-size').value, 10) || 50;
 
-      // 1. Filter
-      currentFilteredItems = allItems.filter(item => {
+      const origMap = new Map(originalItems.map(i => [i.id, i]));
+
+      currentFilteredItems = workingItems.filter(item => {
         const name = (item.name || '').toLowerCase();
         const id = (item.id || '').toLowerCase();
         const subType = (item.subType || '').toLowerCase();
@@ -1400,10 +2207,8 @@
 
         // Type
         const matchesType = typeFilter === 'all' || type === typeFilter;
-
         // SubType
         const matchesSubType = subTypeFilter === 'all' || subType === subTypeFilter;
-
         // Element
         const matchesElement = elementFilter === 'all' || elem === elementFilter;
 
@@ -1412,10 +2217,19 @@
         if (upcomingFilter === 'upcoming') matchesUpcoming = (item.isUpcoming === true);
         if (upcomingFilter === 'released') matchesUpcoming = (!item.isUpcoming);
 
-        return matchesQuery && matchesType && matchesSubType && matchesElement && matchesUpcoming;
+        // Edit State Filter
+        let matchesEditState = true;
+        const isNew = !origMap.has(item.id);
+        const isModified = !isNew && (JSON.stringify(origMap.get(item.id)) !== JSON.stringify(item));
+
+        if (editStateFilter === 'modified') matchesEditState = isModified;
+        else if (editStateFilter === 'new') matchesEditState = isNew;
+        else if (editStateFilter === 'unmodified') matchesEditState = !isNew && !isModified;
+
+        return matchesQuery && matchesType && matchesSubType && matchesElement && matchesUpcoming && matchesEditState;
       });
 
-      // 2. Sort
+      // Sort
       if (sortBy === 'name-asc') {
         currentFilteredItems.sort((a, b) => (a.name || a.id || '').localeCompare(b.name || b.id || ''));
       } else if (sortBy === 'name-desc') {
@@ -1436,11 +2250,9 @@
         currentFilteredItems.sort((a, b) => (a.cooldown || 99999) - (b.cooldown || 99999));
       }
 
-      // Update Summary Counter
       document.getElementById('filter-count-summary').textContent = 
-        `Tìm thấy ${currentFilteredItems.length.toLocaleString()} trên tổng ${allItems.length.toLocaleString()} vật phẩm`;
+        `Tìm thấy ${currentFilteredItems.length.toLocaleString()} trên tổng ${workingItems.length.toLocaleString()} vật phẩm`;
 
-      // 3. Render Paginated Items
       renderTablePage();
     }
 
@@ -1452,11 +2264,8 @@
         tbody.innerHTML = `
           <tr>
             <td colspan="5" class="empty-state">
-              <div class="empty-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-              </div>
               <p style="font-weight: 500;">Không tìm thấy vật phẩm nào khớp với bộ lọc.</p>
-              <p style="font-size: 0.8125rem; margin-top: 0.25rem;">Thử xoá bớt từ khoá tìm kiếm hoặc đổi tiêu chí lọc.</p>
+              <p style="font-size: 0.8125rem; margin-top: 0.25rem;">Thử điều chỉnh từ khoá tìm kiếm hoặc tiêu chí lọc.</p>
             </td>
           </tr>
         `;
@@ -1472,10 +2281,19 @@
       const endIndex = Math.min(startIndex + pageSize, totalFiltered);
       const pageItems = currentFilteredItems.slice(startIndex, endIndex);
 
+      const origMap = new Map(originalItems.map(i => [i.id, i]));
+
       tbody.innerHTML = pageItems.map(item => {
         const elem = (item.element || 'none').toLowerCase();
         const elemClass = `elem-${elem}`;
         const elemIcon = ELEMENT_ICONS[elem] || '⚪';
+
+        const isNew = !origMap.has(item.id);
+        const isModified = !isNew && (JSON.stringify(origMap.get(item.id)) !== JSON.stringify(item));
+
+        let rowClass = '';
+        if (isNew) rowClass = 'is-new';
+        else if (isModified) rowClass = 'is-modified';
         
         let statsInfo = '<span style="color:var(--text-muted);">-</span>';
         if (item.stats) {
@@ -1494,13 +2312,12 @@
           }
         }
 
-        // Sprite handling with CDN fallback
         const rawSprite = item.sprite || '';
         const spriteLocal = rawSprite ? (rawSprite.startsWith('/') ? rawSprite.substring(1) : rawSprite) : '';
         const spriteRemote = rawSprite ? `${SPRITE_CDN_PRIMARY}${rawSprite.startsWith('/') ? '' : '/'}${rawSprite}` : '';
 
         return `
-          <tr onclick="openItemModalById('${escapeJs(item.id)}')">
+          <tr class="${rowClass}" onclick="openEditItemModalById('${escapeJs(item.id)}')">
             <td>
               <div class="item-cell">
                 <div class="item-sprite-box">
@@ -1515,10 +2332,11 @@
                 <div class="item-info">
                   <div class="item-name">
                     ${escapeHtml(item.name || item.id || 'Unnamed')}
+                    ${isNew ? `<span class="tag tag-status-new">Mới</span>` : ''}
+                    ${isModified ? `<span class="tag tag-status-modified">Đã sửa</span>` : ''}
                     ${item.isUpcoming ? `<span class="tag tag-upcoming">Upcoming</span>` : ''}
-                    ${item.levelMax ? `<span style="font-size: 0.6875rem; color: var(--text-muted); font-weight: 500;">Lv.${item.levelMax}</span>` : ''}
                   </div>
-                  <span class="item-id">${escapeHtml(item.id || '')}</span>
+                  <span class="item-id font-mono">${escapeHtml(item.id || '')}</span>
                 </div>
               </div>
             </td>
@@ -1535,15 +2353,22 @@
               <div class="stats-summary">${statsInfo}</div>
             </td>
             <td style="text-align: right;" onclick="event.stopPropagation()">
-              <button class="btn btn-secondary" onclick="openItemModalById('${escapeJs(item.id)}')" title="Xem chi tiết & JSON">
-                Chi tiết
-              </button>
+              <div style="display: flex; gap: 0.35rem; justify-content: flex-end; align-items: center;">
+                <button class="btn btn-secondary btn-sm" onclick="openEditItemModalById('${escapeJs(item.id)}')" title="Chỉnh sửa vật phẩm">
+                  Sửa
+                </button>
+                <button class="btn btn-secondary btn-sm" onclick="cloneItemById('${escapeJs(item.id)}')" title="Nhân bản tạo mục mới">
+                  Nhân bản
+                </button>
+                <button class="btn btn-danger btn-sm" onclick="deleteItemById('${escapeJs(item.id)}')" title="Xoá vật phẩm">
+                  Xoá
+                </button>
+              </div>
             </td>
           </tr>
         `;
       }).join('');
 
-      // Pagination setup
       const paginationContainer = document.getElementById('pagination-container');
       if (totalPages > 1) {
         paginationContainer.style.display = 'flex';
@@ -1564,7 +2389,812 @@
     }
 
     /**
-     * Handle manual file input & drag and drop
+     * DATA STUDIO EDITOR MODAL LOGIC
+     */
+    function openEditItemModalById(itemId) {
+      const item = workingItems.find(i => i.id === itemId);
+      if (!item) return;
+
+      isCreatingNew = false;
+      editingItemOriginal = JSON.parse(JSON.stringify(item));
+      editingDraftItem = JSON.parse(JSON.stringify(item));
+
+      setupEditorModalView();
+    }
+
+    function openNewItemModal() {
+      isCreatingNew = true;
+      editingItemOriginal = null;
+      editingDraftItem = {
+        id: `new_item_${Date.now().toString().slice(-4)}`,
+        name: "New Custom Weapon",
+        element: "fire",
+        type: "weapon",
+        subType: "sword",
+        sprite: "/sprites/weapons/sword_1.png",
+        levelMax: 15,
+        cooldown: 600,
+        isUpcoming: false,
+        stats: {
+          damage: [50, 200],
+          armor: [0, 0],
+          pierce: 1,
+          enablePierceAreaDamage: false,
+          persistAgainstProjectile: false,
+          flightSpeed: 15.0,
+          knockback: 0.0,
+          explosionRange: 0.0
+        },
+        status: {
+          poison: false,
+          frost: false
+        },
+        boosts: {
+          speed: 1.05
+        }
+      };
+
+      setupEditorModalView();
+    }
+
+    function cloneItemById(itemId) {
+      const item = workingItems.find(i => i.id === itemId);
+      if (!item) return;
+
+      isCreatingNew = true;
+      editingItemOriginal = null;
+      editingDraftItem = JSON.parse(JSON.stringify(item));
+      
+      let baseId = item.id + '_copy';
+      let uniqueId = baseId;
+      let counter = 1;
+      while (workingItems.some(i => i.id === uniqueId)) {
+        uniqueId = `${baseId}_${counter++}`;
+      }
+      editingDraftItem.id = uniqueId;
+      editingDraftItem.name = (item.name || item.id) + ' (Copy)';
+
+      setupEditorModalView();
+      showToast(`Đã tạo bản sao ${uniqueId}. Nhấn 'Áp dụng' để lưu vào danh sách.`);
+    }
+
+    function deleteItemById(itemId) {
+      const item = workingItems.find(i => i.id === itemId);
+      if (!item) return;
+      if (!confirm(`Bạn có chắc muốn xoá vật phẩm "${item.name || item.id}" (${item.id})?`)) return;
+
+      pushHistoryState();
+      workingItems = workingItems.filter(i => i.id !== itemId);
+      updateMetricsAndChangeTracker();
+      populateSubTypeFilter();
+      applyFiltersAndRender();
+      showToast(`Đã xoá vật phẩm ${item.id}!`);
+    }
+
+    function setupEditorModalView() {
+      const titleEl = document.getElementById('editor-modal-title');
+      const subEl = document.getElementById('editor-modal-sub');
+      const revertBtn = document.getElementById('btn-revert-current-item');
+
+      if (isCreatingNew) {
+        titleEl.textContent = 'Thêm vật phẩm mới';
+        subEl.textContent = 'Tạo vật phẩm mới và định cấu hình các trường theo chuẩn game';
+        revertBtn.style.display = 'none';
+      } else {
+        titleEl.textContent = editingDraftItem.name || editingDraftItem.id;
+        subEl.textContent = `ID: ${editingDraftItem.id}`;
+
+        const origMatch = originalItems.find(i => i.id === editingDraftItem.id);
+        revertBtn.style.display = origMatch ? 'inline-flex' : 'none';
+      }
+
+      populateFormFromDraft();
+      updateRawJsonFromDraft();
+      updateLivePreview();
+      updateDiffView();
+
+      switchEditorTab('form');
+      document.getElementById('editor-modal').classList.add('open');
+    }
+
+    function populateFormFromDraft() {
+      const item = editingDraftItem;
+      document.getElementById('inp-id').value = item.id || '';
+      document.getElementById('inp-name').value = item.name || '';
+      document.getElementById('inp-type').value = item.type || '';
+      document.getElementById('inp-subtype').value = item.subType || '';
+      document.getElementById('inp-element').value = (item.element || 'none').toLowerCase();
+      document.getElementById('inp-sprite').value = item.sprite || '';
+      document.getElementById('inp-levelmax').value = item.levelMax !== undefined ? item.levelMax : '';
+      document.getElementById('inp-cooldown').value = item.cooldown !== undefined ? item.cooldown : '';
+      document.getElementById('inp-upcoming').checked = item.isUpcoming === true;
+
+      // Cooldown preview
+      updateCooldownSecPreview(item.cooldown);
+
+      // Stats
+      const stats = item.stats || {};
+      document.getElementById('inp-dmg-min').value = (stats.damage && stats.damage[0] !== undefined) ? stats.damage[0] : '';
+      document.getElementById('inp-dmg-max').value = (stats.damage && stats.damage[1] !== undefined) ? stats.damage[1] : '';
+      document.getElementById('inp-arm-min').value = (stats.armor && stats.armor[0] !== undefined) ? stats.armor[0] : '';
+      document.getElementById('inp-arm-max').value = (stats.armor && stats.armor[1] !== undefined) ? stats.armor[1] : '';
+      document.getElementById('inp-pierce').value = stats.pierce !== undefined ? stats.pierce : '';
+      document.getElementById('inp-flightspeed').value = stats.flightSpeed !== undefined ? stats.flightSpeed : '';
+      document.getElementById('inp-knockback').value = stats.knockback !== undefined ? stats.knockback : '';
+      document.getElementById('inp-explosion').value = stats.explosionRange !== undefined ? stats.explosionRange : '';
+      document.getElementById('inp-piercearea').checked = stats.enablePierceAreaDamage === true;
+      document.getElementById('inp-persistproj').checked = stats.persistAgainstProjectile === true;
+
+      // Status
+      const status = item.status || {};
+      document.getElementById('inp-status-poison').checked = status.poison === true;
+      document.getElementById('inp-status-frost').checked = status.frost === true;
+
+      // Boosts
+      renderBoostsEditorRows(item.boosts || {});
+
+      // Header icon
+      updateHeaderSprite(item);
+      handleIdInputChange();
+    }
+
+    function renderBoostsEditorRows(boosts) {
+      const container = document.getElementById('boosts-container');
+      const entries = Object.entries(boosts);
+
+      if (entries.length === 0) {
+        container.innerHTML = `<span style="font-size:0.75rem; color:var(--text-muted);">Không có boosts cộng thêm</span>`;
+        return;
+      }
+
+      container.innerHTML = entries.map(([key, val], index) => {
+        const pct = Math.round((val - 1) * 100);
+        const sign = pct >= 0 ? `+${pct}%` : `${pct}%`;
+        return `
+          <div style="display: flex; gap: 0.5rem; align-items: center;" data-boost-index="${index}">
+            <input type="text" class="form-control font-mono boost-key-input" style="flex: 1;" value="${escapeHtml(key)}" placeholder="speed" oninput="syncBoostsFromUI()">
+            <input type="number" step="0.01" class="form-control font-mono boost-val-input" style="width: 110px;" value="${val}" placeholder="1.05" oninput="syncBoostsFromUI()">
+            <span class="tag" style="min-width: 60px; justify-content: center; background: rgba(99,102,241,0.2); color: #a5b4fc;">${sign}</span>
+            <button type="button" class="btn btn-danger btn-sm" onclick="removeBoostRow(${index})">Xoá</button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function addBoostRow() {
+      if (!editingDraftItem.boosts) editingDraftItem.boosts = {};
+      const presetKeys = ['speed', 'jump', 'armor', 'damage', 'hp', 'cooldown'];
+      const unusedKey = presetKeys.find(k => !editingDraftItem.boosts[k]) || `boost_${Date.now().toString().slice(-3)}`;
+      editingDraftItem.boosts[unusedKey] = 1.05;
+      renderBoostsEditorRows(editingDraftItem.boosts);
+      syncFormToCurrentDraft();
+    }
+
+    function removeBoostRow(index) {
+      const entries = Object.entries(editingDraftItem.boosts || {});
+      if (entries[index]) {
+        delete editingDraftItem.boosts[entries[index][0]];
+        renderBoostsEditorRows(editingDraftItem.boosts);
+        syncFormToCurrentDraft();
+      }
+    }
+
+    function syncBoostsFromUI() {
+      const rows = document.querySelectorAll('#boosts-container > div');
+      const newBoosts = {};
+      rows.forEach(row => {
+        const key = row.querySelector('.boost-key-input').value.trim();
+        const val = parseFloat(row.querySelector('.boost-val-input').value) || 1.0;
+        if (key) {
+          newBoosts[key] = val;
+        }
+      });
+      editingDraftItem.boosts = newBoosts;
+      renderBoostsEditorRows(newBoosts);
+      syncFormToCurrentDraft();
+    }
+
+    function syncFormToCurrentDraft() {
+      const idVal = document.getElementById('inp-id').value.trim();
+      const nameVal = document.getElementById('inp-name').value.trim();
+      const typeVal = document.getElementById('inp-type').value.trim();
+      const subTypeVal = document.getElementById('inp-subtype').value.trim();
+      const elementVal = document.getElementById('inp-element').value.trim();
+      const spriteVal = document.getElementById('inp-sprite').value.trim();
+      const levelMaxVal = parseInt(document.getElementById('inp-levelmax').value, 10);
+      const cooldownVal = parseInt(document.getElementById('inp-cooldown').value, 10);
+      const isUpcomingVal = document.getElementById('inp-upcoming').checked;
+
+      editingDraftItem.id = idVal;
+      editingDraftItem.name = nameVal;
+      editingDraftItem.type = typeVal;
+      editingDraftItem.subType = subTypeVal;
+      editingDraftItem.element = elementVal;
+      editingDraftItem.sprite = spriteVal;
+      editingDraftItem.levelMax = isNaN(levelMaxVal) ? 0 : levelMaxVal;
+      editingDraftItem.cooldown = isNaN(cooldownVal) ? 0 : cooldownVal;
+      editingDraftItem.isUpcoming = isUpcomingVal;
+
+      updateCooldownSecPreview(editingDraftItem.cooldown);
+
+      // Stats
+      if (!editingDraftItem.stats) editingDraftItem.stats = {};
+      const dmgMin = parseInt(document.getElementById('inp-dmg-min').value, 10) || 0;
+      const dmgMax = parseInt(document.getElementById('inp-dmg-max').value, 10) || 0;
+      editingDraftItem.stats.damage = [dmgMin, dmgMax];
+
+      const armMin = parseInt(document.getElementById('inp-arm-min').value, 10) || 0;
+      const armMax = parseInt(document.getElementById('inp-arm-max').value, 10) || 0;
+      editingDraftItem.stats.armor = [armMin, armMax];
+
+      const pierceVal = parseInt(document.getElementById('inp-pierce').value, 10);
+      if (!isNaN(pierceVal)) editingDraftItem.stats.pierce = pierceVal;
+
+      const flightVal = parseFloat(document.getElementById('inp-flightspeed').value);
+      if (!isNaN(flightVal)) editingDraftItem.stats.flightSpeed = flightVal;
+
+      const knockVal = parseFloat(document.getElementById('inp-knockback').value);
+      if (!isNaN(knockVal)) editingDraftItem.stats.knockback = knockVal;
+
+      const expVal = parseFloat(document.getElementById('inp-explosion').value);
+      if (!isNaN(expVal)) editingDraftItem.stats.explosionRange = expVal;
+
+      editingDraftItem.stats.enablePierceAreaDamage = document.getElementById('inp-piercearea').checked;
+      editingDraftItem.stats.persistAgainstProjectile = document.getElementById('inp-persistproj').checked;
+
+      // Status
+      if (!editingDraftItem.status) editingDraftItem.status = {};
+      editingDraftItem.status.poison = document.getElementById('inp-status-poison').checked;
+      editingDraftItem.status.frost = document.getElementById('inp-status-frost').checked;
+
+      updateHeaderSprite(editingDraftItem);
+      updateRawJsonFromDraft();
+      updateLivePreview();
+      updateDiffView();
+    }
+
+    function updateCooldownSecPreview(cd) {
+      const preview = document.getElementById('cooldown-sec-preview');
+      if (!preview) return;
+      if (!cd || isNaN(cd)) {
+        preview.textContent = '0s';
+      } else {
+        preview.textContent = (cd / 1000).toFixed(2) + 's';
+      }
+    }
+
+    function handleIdInputChange() {
+      const idInp = document.getElementById('inp-id');
+      const errEl = document.getElementById('inp-id-error');
+      const val = idInp.value.trim();
+
+      if (!val) {
+        idInp.classList.add('is-invalid');
+        errEl.textContent = 'ID không được để trống!';
+        errEl.style.display = 'block';
+        return;
+      }
+
+      // Check unique (allow if same as original item being edited)
+      const duplicate = workingItems.some(item => {
+        if (!isCreatingNew && editingItemOriginal && item.id === editingItemOriginal.id) return false;
+        return item.id.toLowerCase() === val.toLowerCase();
+      });
+
+      if (duplicate) {
+        idInp.classList.add('is-invalid');
+        errEl.textContent = `ID "${val}" đã tồn tại trong dataset! Hãy chọn ID khác.`;
+        errEl.style.display = 'block';
+      } else {
+        idInp.classList.remove('is-invalid');
+        errEl.style.display = 'none';
+      }
+    }
+
+    function updateHeaderSprite(item) {
+      const img = document.getElementById('editor-header-sprite-img');
+      const rawSprite = item.sprite || '';
+      const spriteLocal = rawSprite ? (rawSprite.startsWith('/') ? rawSprite.substring(1) : rawSprite) : '';
+      const spriteRemote = rawSprite ? `${SPRITE_CDN_PRIMARY}${rawSprite.startsWith('/') ? '' : '/'}${rawSprite}` : '';
+
+      if (rawSprite) {
+        img.src = spriteLocal;
+        img.onerror = function() {
+          if (!this.dataset.triedRemote) {
+            this.dataset.triedRemote = '1';
+            this.src = spriteRemote;
+          } else {
+            this.style.display = 'none';
+          }
+        };
+        img.style.display = 'block';
+      } else {
+        img.style.display = 'none';
+      }
+    }
+
+    /**
+     * Raw JSON Editor Sync
+     */
+    function updateRawJsonFromDraft() {
+      const textarea = document.getElementById('raw-json-textarea');
+      if (document.activeElement === textarea) return; // Don't interrupt while typing in raw
+      textarea.value = JSON.stringify(editingDraftItem, null, 2);
+      setRawJsonStatus(true);
+    }
+
+    function handleRawJsonChange() {
+      const textarea = document.getElementById('raw-json-textarea');
+      const val = textarea.value;
+
+      try {
+        const parsed = JSON.parse(val);
+        if (typeof parsed !== 'object' || Array.isArray(parsed) || parsed === null) {
+          throw new Error('Dữ liệu phải là một đối tượng JSON (Object).');
+        }
+        editingDraftItem = parsed;
+        setRawJsonStatus(true);
+        populateFormFromDraft();
+        updateLivePreview();
+        updateDiffView();
+      } catch (err) {
+        setRawJsonStatus(false, err.message);
+      }
+    }
+
+    function beautifyRawJson() {
+      const textarea = document.getElementById('raw-json-textarea');
+      try {
+        const parsed = JSON.parse(textarea.value);
+        textarea.value = JSON.stringify(parsed, null, 2);
+        setRawJsonStatus(true);
+      } catch (e) {
+        showToast('Không thể định dạng: JSON đang có lỗi cú pháp.');
+      }
+    }
+
+    function copyRawJson() {
+      const textarea = document.getElementById('raw-json-textarea');
+      copyText(textarea.value);
+    }
+
+    function setRawJsonStatus(isValid, errMsg = '') {
+      isRawJsonValid = isValid;
+      const statusEl = document.getElementById('raw-json-status');
+      const applyBtn = document.getElementById('btn-apply-editor');
+
+      if (isValid) {
+        statusEl.className = 'json-validation-status valid';
+        statusEl.innerHTML = `
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <span>Cú pháp JSON hợp lệ</span>
+        `;
+        applyBtn.disabled = false;
+      } else {
+        statusEl.className = 'json-validation-status invalid';
+        statusEl.innerHTML = `
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          <span>Lỗi JSON: ${escapeHtml(errMsg)}</span>
+        `;
+        applyBtn.disabled = true;
+      }
+    }
+
+    /**
+     * DIFF VIEWER ENGINE (Pure JS Line Diff)
+     */
+    function updateDiffView() {
+      const summaryBox = document.getElementById('diff-summary-box');
+      const linesBox = document.getElementById('diff-lines-container');
+
+      if (isCreatingNew || !editingItemOriginal) {
+        summaryBox.innerHTML = `
+          <div style="display:flex; align-items:center; gap:0.5rem; color:#34d399; font-weight:600;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+            Vật phẩm mới hoàn toàn (Chưa tồn tại trong bản nạp gốc)
+          </div>
+        `;
+        const newJsonLines = JSON.stringify(editingDraftItem, null, 2).split('\n');
+        linesBox.innerHTML = newJsonLines.map((line, idx) => `
+          <div class="diff-line diff-add">
+            <span class="diff-line-num">${idx + 1}</span>
+            <span class="diff-line-prefix">+</span>
+            <span>${escapeHtml(line)}</span>
+          </div>
+        `).join('');
+        return;
+      }
+
+      const origStr = JSON.stringify(editingItemOriginal, null, 2);
+      const draftStr = JSON.stringify(editingDraftItem, null, 2);
+
+      if (origStr === draftStr) {
+        summaryBox.innerHTML = `
+          <div style="display:flex; align-items:center; gap:0.5rem; color:var(--text-muted);">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            Chưa có thay đổi nào so với bản gốc.
+          </div>
+        `;
+        linesBox.innerHTML = origStr.split('\n').map((line, idx) => `
+          <div class="diff-line">
+            <span class="diff-line-num">${idx + 1}</span>
+            <span class="diff-line-prefix"> </span>
+            <span>${escapeHtml(line)}</span>
+          </div>
+        `).join('');
+        return;
+      }
+
+      // Compute Changes Summary
+      const changedKeys = [];
+      const allKeys = new Set([...Object.keys(editingItemOriginal), ...Object.keys(editingDraftItem)]);
+      allKeys.forEach(k => {
+        const v1 = JSON.stringify(editingItemOriginal[k]);
+        const v2 = JSON.stringify(editingDraftItem[k]);
+        if (v1 !== v2) {
+          changedKeys.push(`<code>${k}</code>`);
+        }
+      });
+
+      summaryBox.innerHTML = `
+        <div style="display:flex; align-items:center; gap:0.5rem; color:#fbbf24; font-weight:600; margin-bottom:0.25rem;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          Phát hiện thay đổi trên ${changedKeys.length} trường dữ liệu:
+        </div>
+        <div style="font-size:0.8125rem; color:var(--text-secondary); margin-top:0.25rem;">
+          ${changedKeys.join(', ')}
+        </div>
+      `;
+
+      // Line by line diff display
+      const origLines = origStr.split('\n');
+      const draftLines = draftStr.split('\n');
+      linesBox.innerHTML = computeSimpleLineDiffHtml(origLines, draftLines);
+    }
+
+    function computeSimpleLineDiffHtml(lines1, lines2) {
+      let html = '';
+      const maxLen = Math.max(lines1.length, lines2.length);
+
+      for (let i = 0; i < maxLen; i++) {
+        const l1 = lines1[i];
+        const l2 = lines2[i];
+
+        if (l1 === l2) {
+          html += `
+            <div class="diff-line">
+              <span class="diff-line-num">${i + 1}</span>
+              <span class="diff-line-prefix"> </span>
+              <span>${escapeHtml(l1)}</span>
+            </div>
+          `;
+        } else if (l1 !== undefined && l2 !== undefined) {
+          html += `
+            <div class="diff-line diff-del">
+              <span class="diff-line-num">${i + 1}</span>
+              <span class="diff-line-prefix">-</span>
+              <span>${escapeHtml(l1)}</span>
+            </div>
+            <div class="diff-line diff-add">
+              <span class="diff-line-num">${i + 1}</span>
+              <span class="diff-line-prefix">+</span>
+              <span>${escapeHtml(l2)}</span>
+            </div>
+          `;
+        } else if (l1 !== undefined && l2 === undefined) {
+          html += `
+            <div class="diff-line diff-del">
+              <span class="diff-line-num">${i + 1}</span>
+              <span class="diff-line-prefix">-</span>
+              <span>${escapeHtml(l1)}</span>
+            </div>
+          `;
+        } else if (l1 === undefined && l2 !== undefined) {
+          html += `
+            <div class="diff-line diff-add">
+              <span class="diff-line-num">${i + 1}</span>
+              <span class="diff-line-prefix">+</span>
+              <span>${escapeHtml(l2)}</span>
+            </div>
+          `;
+        }
+      }
+      return html;
+    }
+
+    /**
+     * LIVE CARD PREVIEW
+     */
+    function updateLivePreview() {
+      const item = editingDraftItem;
+      const elem = (item.element || 'none').toLowerCase();
+      const elemClass = `elem-${elem}`;
+      const elemIcon = ELEMENT_ICONS[elem] || '⚪';
+
+      document.getElementById('live-preview-name').textContent = item.name || 'Unnamed Item';
+      document.getElementById('live-preview-id').textContent = `id: ${item.id || 'none'}`;
+
+      // Sprite
+      const spriteBox = document.getElementById('live-preview-sprite-box');
+      const spriteImg = document.getElementById('live-preview-sprite-img');
+      const fallbackIcon = document.getElementById('live-preview-fallback-icon');
+
+      const rawSprite = item.sprite || '';
+      const spriteLocal = rawSprite ? (rawSprite.startsWith('/') ? rawSprite.substring(1) : rawSprite) : '';
+      const spriteRemote = rawSprite ? `${SPRITE_CDN_PRIMARY}${rawSprite.startsWith('/') ? '' : '/'}${rawSprite}` : '';
+
+      if (rawSprite) {
+        spriteImg.src = spriteLocal;
+        spriteImg.onerror = function() {
+          if (!this.dataset.triedRemote) {
+            this.dataset.triedRemote = '1';
+            this.src = spriteRemote;
+          } else {
+            this.style.display = 'none';
+            fallbackIcon.style.display = 'block';
+            fallbackIcon.textContent = elemIcon;
+          }
+        };
+        spriteImg.style.display = 'block';
+        fallbackIcon.style.display = 'none';
+      } else {
+        spriteImg.style.display = 'none';
+        fallbackIcon.style.display = 'block';
+        fallbackIcon.textContent = elemIcon;
+      }
+
+      // Tags
+      document.getElementById('live-preview-tags').innerHTML = `
+        <span class="tag tag-elem ${elemClass}">${elemIcon} ${item.element || 'None'}</span>
+        <span class="tag tag-type">${item.type || 'Type'}</span>
+        ${item.subType ? `<span class="tag-subtype">${item.subType}</span>` : ''}
+        ${item.isUpcoming ? `<span class="tag tag-upcoming">Upcoming</span>` : ''}
+        ${item.levelMax ? `<span style="font-size: 0.6875rem; color: var(--text-muted); font-weight: 500;">Lv.${item.levelMax}</span>` : ''}
+      `;
+
+      // Stats
+      let statsHtml = '';
+      const stats = item.stats || {};
+      if (stats.damage) {
+        statsHtml += `
+          <div class="card-stat-pill">
+            <span class="stat-label" style="font-size:0.6875rem; color:#fbbf24;">Damage</span>
+            <span class="font-mono" style="font-weight:700; color:#fbbf24;">${stats.damage[0]} - ${stats.damage[1]}</span>
+          </div>
+        `;
+      }
+      if (stats.armor) {
+        statsHtml += `
+          <div class="card-stat-pill">
+            <span class="stat-label" style="font-size:0.6875rem; color:#60a5fa;">Armor</span>
+            <span class="font-mono" style="font-weight:700; color:#60a5fa;">${stats.armor[0]} - ${stats.armor[1]}</span>
+          </div>
+        `;
+      }
+      if (item.cooldown) {
+        statsHtml += `
+          <div class="card-stat-pill">
+            <span class="stat-label" style="font-size:0.6875rem;">Cooldown</span>
+            <span class="font-mono" style="font-weight:600;">${item.cooldown}ms (${(item.cooldown/1000).toFixed(2)}s)</span>
+          </div>
+        `;
+      }
+      if (stats.pierce) {
+        statsHtml += `
+          <div class="card-stat-pill">
+            <span class="stat-label" style="font-size:0.6875rem;">Pierce</span>
+            <span class="font-mono" style="font-weight:600;">${stats.pierce}</span>
+          </div>
+        `;
+      }
+
+      document.getElementById('live-preview-stats-grid').innerHTML = statsHtml || `
+        <div style="grid-column:1/-1; font-size:0.75rem; color:var(--text-muted); text-align:center; padding:0.5rem;">
+          Không có thông số chiến đấu đặc biệt
+        </div>
+      `;
+
+      // Boosts
+      let boostsHtml = '';
+      if (item.boosts && Object.keys(item.boosts).length > 0) {
+        boostsHtml = `
+          <span class="stat-label" style="font-size:0.6875rem; display:block; margin-bottom:0.35rem;">Chỉ số cộng thêm (Boosts)</span>
+          <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+            ${Object.entries(item.boosts).map(([k, v]) => `
+              <span class="tag" style="background: rgba(99, 102, 241, 0.2); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.35); font-size: 0.75rem;">
+                +${Math.round((v - 1) * 100)}% ${k.toUpperCase()}
+              </span>
+            `).join('')}
+          </div>
+        `;
+      }
+      document.getElementById('live-preview-boosts-container').innerHTML = boostsHtml;
+    }
+
+    function switchEditorTab(tab) {
+      const tabs = ['form', 'raw', 'diff', 'preview'];
+      tabs.forEach(t => {
+        const btn = document.getElementById(`tab-btn-${t}`);
+        const view = document.getElementById(`editor-view-${t}`);
+        if (t === tab) {
+          if (btn) btn.classList.add('active');
+          if (view) view.style.display = 'block';
+        } else {
+          if (btn) btn.classList.remove('active');
+          if (view) view.style.display = 'none';
+        }
+      });
+
+      if (tab === 'diff') updateDiffView();
+      if (tab === 'preview') updateLivePreview();
+    }
+
+    function applyEditorChanges() {
+      if (!isRawJsonValid) {
+        alert('Không thể lưu: Mã JSON đang có lỗi cú pháp.');
+        return;
+      }
+
+      const idVal = (editingDraftItem.id || '').trim();
+      if (!idVal) {
+        alert('Item ID không được để trống!');
+        switchEditorTab('form');
+        document.getElementById('inp-id').focus();
+        return;
+      }
+
+      // Check unique
+      const duplicate = workingItems.some(item => {
+        if (!isCreatingNew && editingItemOriginal && item.id === editingItemOriginal.id) return false;
+        return item.id.toLowerCase() === idVal.toLowerCase();
+      });
+
+      if (duplicate) {
+        alert(`ID "${idVal}" đã bị trùng lặp với một vật phẩm khác. Vui lòng đổi ID!`);
+        switchEditorTab('form');
+        document.getElementById('inp-id').focus();
+        return;
+      }
+
+      pushHistoryState();
+
+      if (isCreatingNew) {
+        workingItems.unshift(JSON.parse(JSON.stringify(editingDraftItem)));
+        showToast(`Đã thêm mới vật phẩm "${editingDraftItem.name || editingDraftItem.id}"!`);
+      } else {
+        const idx = workingItems.findIndex(i => i.id === editingItemOriginal.id);
+        if (idx !== -1) {
+          workingItems[idx] = JSON.parse(JSON.stringify(editingDraftItem));
+          showToast(`Đã cập nhật vật phẩm "${editingDraftItem.name || editingDraftItem.id}"!`);
+        }
+      }
+
+      updateMetricsAndChangeTracker();
+      populateSubTypeFilter();
+      applyFiltersAndRender();
+      closeEditorModal();
+    }
+
+    function revertCurrentItemInEditor() {
+      if (!editingItemOriginal) return;
+      if (!confirm('Khôi phục vật phẩm này về trạng thái nguyên bản lúc mới nạp?')) return;
+      editingDraftItem = JSON.parse(JSON.stringify(editingItemOriginal));
+      populateFormFromDraft();
+      updateRawJsonFromDraft();
+      updateLivePreview();
+      updateDiffView();
+      showToast('Đã khôi phục về trạng thái gốc.');
+    }
+
+    function closeEditorModal(e) {
+      document.getElementById('editor-modal').classList.remove('open');
+    }
+
+    function revertAllChanges() {
+      if (!confirm('Bạn có chắc muốn huỷ bỏ toàn bộ các thay đổi và đưa dataset về trạng thái ban đầu?')) return;
+      pushHistoryState();
+      workingItems = JSON.parse(JSON.stringify(originalItems));
+      updateMetricsAndChangeTracker();
+      populateSubTypeFilter();
+      applyFiltersAndRender();
+      showToast('Đã khôi phục toàn bộ dataset về trạng thái gốc!');
+    }
+
+    function toggleModifiedOnlyFilter() {
+      const select = document.getElementById('filter-edit-state');
+      if (select.value === 'modified') {
+        select.value = 'all';
+        document.getElementById('tracker-filter-btn-text').textContent = 'Lọc mục đã sửa';
+      } else {
+        select.value = 'modified';
+        document.getElementById('tracker-filter-btn-text').textContent = 'Xem tất cả mục';
+      }
+      applyFiltersAndRender();
+    }
+
+    /**
+     * EXPORT PACKAGE & MANIFEST SYSTEM
+     */
+    function openExportModal() {
+      const nowTs = Math.floor(Date.now() / 1000).toString();
+      const datasetName = `item-${nowTs}.json`;
+
+      document.getElementById('export-dataset-filename').value = datasetName;
+      
+      const vPreview = {
+        version: nowTs,
+        url: `/${datasetName}`
+      };
+      document.getElementById('export-version-preview').textContent = JSON.stringify(vPreview, null, 4);
+
+      // Counts
+      const origMap = new Map(originalItems.map(i => [i.id, i]));
+      let modCount = 0;
+      workingItems.forEach(item => {
+        if (!origMap.has(item.id) || JSON.stringify(origMap.get(item.id)) !== JSON.stringify(item)) {
+          modCount++;
+        }
+      });
+
+      document.getElementById('export-stat-total').textContent = workingItems.length;
+      document.getElementById('export-stat-modified').textContent = `${modCount} items`;
+
+      document.getElementById('export-modal').classList.add('open');
+    }
+
+    function closeExportModal(e) {
+      document.getElementById('export-modal').classList.remove('open');
+    }
+
+    function downloadExportBundle() {
+      const datasetName = document.getElementById('export-dataset-filename').value.trim() || `item-${Date.now()}.json`;
+      const matchTs = datasetName.replace(/[^0-9]/g, '') || Math.floor(Date.now() / 1000).toString();
+
+      const versionObj = {
+        version: matchTs,
+        url: `/${datasetName}`
+      };
+
+      // 1. Download Dataset JSON
+      downloadJsonFile(workingItems, datasetName);
+
+      // 2. Download version.json
+      setTimeout(() => {
+        downloadJsonFile(versionObj, 'version.json');
+        showToast('Đã tải xuống thành công dataset và version.json!');
+        closeExportModal();
+      }, 350);
+    }
+
+    function downloadJsonFile(obj, filename) {
+      const jsonStr = JSON.stringify(obj, null, 2);
+      const blob = new Blob([jsonStr], { type: 'application/json;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function copyExportedJsonToClipboard() {
+      const jsonStr = JSON.stringify(workingItems, null, 2);
+      copyText(jsonStr);
+    }
+
+    function exportFilteredJson() {
+      if (!currentFilteredItems.length) {
+        showToast('Không có dữ liệu để xuất!');
+        return;
+      }
+      downloadJsonFile(currentFilteredItems, `inventory-items-filtered-${Date.now()}.json`);
+      showToast(`Đã xuất ${currentFilteredItems.length} vật phẩm!`);
+    }
+
+    /**
+     * File Reader & Drag-Drop Fallback
      */
     function handleFileInput(e) {
       const file = e.target.files && e.target.files[0];
@@ -1578,7 +3208,6 @@
         try {
           const parsed = JSON.parse(event.target.result);
           if (Array.isArray(parsed)) {
-            // It's an items array
             currentSourceMode = 'file_reader';
             datasetFileName = file.name;
             setSourceStatus('cyan', `File: ${file.name}`);
@@ -1587,10 +3216,9 @@
             loadDatasetData({ version: 'Local File' }, parsed);
             showToast(`Đã nạp thành công ${parsed.length} vật phẩm từ ${file.name}`);
           } else if (parsed && parsed.version && parsed.url) {
-            // It's a version.json file
             showToast(`Đã đọc version.json (v${parsed.version}). Hãy nạp tiếp file item JSON tương ứng.`);
           } else {
-            throw new Error('Cấu trúc file JSON không khớp với định dạng vật phẩm.');
+            throw new Error('Cấu trúc file JSON không khớp với danh sách mảng vật phẩm.');
           }
         } catch (err) {
           alert('Lỗi khi đọc file JSON: ' + err.message);
@@ -1599,9 +3227,6 @@
       reader.readAsText(file);
     }
 
-    /**
-     * Show interactive Dropzone / Prompt when auto-fetch fails
-     */
     function showLocalFilePrompt(isFileProto) {
       setSourceStatus('warning', isFileProto ? 'File Protocol (Chờ nạp file)' : 'Không có kết nối CDN');
       document.getElementById('val-data-source').textContent = 'Chưa nạp dữ liệu';
@@ -1619,7 +3244,7 @@
               </svg>
               <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.35rem;">Kéo thả tệp <code>item-*.json</code> vào đây hoặc nhấp để chọn tệp</h3>
               <p style="color: var(--text-secondary); font-size: 0.875rem; max-width: 500px; margin: 0 auto 1rem;">
-                Trình duyệt đã bảo vệ chặn fetch trực tiếp từ <code>file://</code>. Bạn có thể nạp ngay file JSON từ thư mục này để duyệt offline không cần cài đặt web server!
+                Trình duyệt đã bảo vệ chặn fetch trực tiếp từ <code>file://</code>. Bạn có thể nạp ngay file JSON từ thư mục này để chỉnh sửa offline mà không cần server!
               </p>
               <button class="btn btn-primary" onclick="event.stopPropagation(); document.getElementById('local-file-input').click();">
                 Chọn tệp JSON từ máy tính
@@ -1630,14 +3255,7 @@
       `;
     }
 
-    /**
-     * Drag & Drop Event listeners on document
-     */
-    window.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-    });
-
+    window.addEventListener('dragover', (e) => { e.preventDefault(); e.stopPropagation(); });
     window.addEventListener('drop', (e) => {
       e.preventDefault();
       e.stopPropagation();
@@ -1652,194 +3270,26 @@
     });
 
     /**
-     * Modal Dialog handling
+     * Unsaved Changes Guard
      */
-    function openItemModalById(itemId) {
-      const item = allItems.find(i => i.id === itemId);
-      if (!item) return;
-      currentModalItem = item;
-
-      // Header
-      document.getElementById('modal-item-title').textContent = item.name || item.id || 'Item Details';
-      document.getElementById('modal-item-id').textContent = `ID: ${item.id || '-'}`;
-
-      // Sprite
-      const modalSpriteImg = document.getElementById('modal-sprite-img');
-      const rawSprite = item.sprite || '';
-      const spriteLocal = rawSprite ? (rawSprite.startsWith('/') ? rawSprite.substring(1) : rawSprite) : '';
-      const spriteRemote = rawSprite ? `${SPRITE_CDN_PRIMARY}${rawSprite.startsWith('/') ? '' : '/'}${rawSprite}` : '';
-
-      if (rawSprite) {
-        modalSpriteImg.src = spriteLocal;
-        modalSpriteImg.onerror = function() {
-          if (!this.dataset.triedRemote) {
-            this.dataset.triedRemote = '1';
-            this.src = spriteRemote;
-          } else {
-            this.style.display = 'none';
-          }
-        };
-        modalSpriteImg.style.display = 'block';
-      } else {
-        modalSpriteImg.style.display = 'none';
-      }
-
-      // Render Spec View
-      renderModalSpec(item);
-
-      // Render JSON View
-      document.getElementById('modal-json-content').textContent = JSON.stringify(item, null, 2);
-
-      // Default to spec tab
-      switchModalTab('spec');
-
-      document.getElementById('json-modal').classList.add('open');
-    }
-
-    function renderModalSpec(item) {
-      const elem = (item.element || 'none').toLowerCase();
-      const elemIcon = ELEMENT_ICONS[elem] || '⚪';
-
-      let statsHtml = '';
-      if (item.stats) {
-        if (item.stats.damage) {
-          statsHtml += `
-            <div class="spec-card">
-              <span class="spec-card-label">Sát thương (Damage)</span>
-              <span class="spec-card-value" style="color: #fbbf24;">${item.stats.damage[0]} - ${item.stats.damage[1]}</span>
-            </div>
-          `;
-        }
-        if (item.stats.armor) {
-          statsHtml += `
-            <div class="spec-card">
-              <span class="spec-card-label">Giáp (Armor)</span>
-              <span class="spec-card-value" style="color: #60a5fa;">${item.stats.armor[0]} - ${item.stats.armor[1]}</span>
-            </div>
-          `;
-        }
-        if (item.stats.pierce !== undefined) {
-          statsHtml += `
-            <div class="spec-card">
-              <span class="spec-card-label">Xuyên phá (Pierce)</span>
-              <span class="spec-card-value">${item.stats.pierce}</span>
-            </div>
-          `;
-        }
-        if (item.stats.flightSpeed) {
-          statsHtml += `
-            <div class="spec-card">
-              <span class="spec-card-label">Tốc độ bay</span>
-              <span class="spec-card-value">${item.stats.flightSpeed}</span>
-            </div>
-          `;
-        }
-        if (item.stats.explosionRange) {
-          statsHtml += `
-            <div class="spec-card">
-              <span class="spec-card-label">Bán kính nổ</span>
-              <span class="spec-card-value">${item.stats.explosionRange}</span>
-            </div>
-          `;
+    window.addEventListener('beforeunload', (e) => {
+      const origMap = new Map(originalItems.map(i => [i.id, i]));
+      let hasChanges = false;
+      for (const item of workingItems) {
+        if (!origMap.has(item.id) || JSON.stringify(origMap.get(item.id)) !== JSON.stringify(item)) {
+          hasChanges = true;
+          break;
         }
       }
-
-      if (item.cooldown) {
-        statsHtml += `
-          <div class="spec-card">
-            <span class="spec-card-label">Hồi chiêu (Cooldown)</span>
-            <span class="spec-card-value">${item.cooldown} ms</span>
-          </div>
-        `;
+      if (hasChanges) {
+        e.preventDefault();
+        e.returnValue = 'Bạn có những thay đổi chưa xuất bản. Bạn có chắc muốn rời đi?';
       }
-
-      if (item.levelMax) {
-        statsHtml += `
-          <div class="spec-card">
-            <span class="spec-card-label">Cấp tối đa</span>
-            <span class="spec-card-value">Lv. ${item.levelMax}</span>
-          </div>
-        `;
-      }
-
-      let boostsHtml = '';
-      if (item.boosts && Object.keys(item.boosts).length > 0) {
-        boostsHtml = `
-          <div style="margin-top: 1.25rem;">
-            <span class="stat-label">Chỉ số cộng thêm (Boosts)</span>
-            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem;">
-              ${Object.entries(item.boosts).map(([key, val]) => `
-                <span class="tag" style="background: rgba(99, 102, 241, 0.15); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.3); font-size: 0.75rem; padding: 0.3rem 0.6rem;">
-                  +${Math.round((val - 1) * 100)}% ${key.toUpperCase()}
-                </span>
-              `).join('')}
-            </div>
-          </div>
-        `;
-      }
-
-      document.getElementById('modal-spec-content').innerHTML = `
-        <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
-          <span class="tag tag-elem elem-${elem}">${elemIcon} ${item.element || 'None'}</span>
-          <span class="tag tag-type">${item.type || 'Unknown'}</span>
-          ${item.subType ? `<span class="tag-subtype">${item.subType}</span>` : ''}
-          ${item.isUpcoming ? `<span class="tag tag-upcoming">Upcoming Release</span>` : ''}
-        </div>
-
-        <span class="stat-label">Thông số chiến đấu</span>
-        <div class="spec-grid">
-          ${statsHtml || '<div class="spec-card"><span class="spec-card-value" style="color:var(--text-muted); font-size:0.9rem;">Không có thông số đặc biệt</span></div>'}
-        </div>
-
-        ${boostsHtml}
-      `;
-    }
-
-    function switchModalTab(tab) {
-      const specTabBtn = document.getElementById('tab-btn-spec');
-      const jsonTabBtn = document.getElementById('tab-btn-json');
-      const specView = document.getElementById('modal-spec-view');
-      const jsonView = document.getElementById('modal-json-view');
-
-      if (tab === 'spec') {
-        specTabBtn.classList.add('active');
-        jsonTabBtn.classList.remove('active');
-        specView.style.display = 'block';
-        jsonView.style.display = 'none';
-      } else {
-        jsonTabBtn.classList.add('active');
-        specTabBtn.classList.remove('active');
-        jsonView.style.display = 'block';
-        specView.style.display = 'none';
-      }
-    }
-
-    function closeModal(e) {
-      document.getElementById('json-modal').classList.remove('open');
-    }
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeModal();
     });
 
     /**
-     * Copy & Download Utils
+     * Helper Utilities
      */
-    function copyFullUrl(relPath) {
-      const url = resolveRelativeUrl(relPath);
-      copyText(url);
-    }
-
-    function copyDatasetUrl() {
-      const url = resolveRelativeUrl(datasetFileName);
-      copyText(url);
-    }
-
-    function copyCurrentModalJson() {
-      if (!currentModalItem) return;
-      copyText(JSON.stringify(currentModalItem, null, 2));
-    }
-
     function copyText(text) {
       if (!text) return;
       if (navigator.clipboard && window.isSecureContext) {
@@ -1862,21 +3312,6 @@
       setTimeout(() => {
         toast.classList.remove('show');
       }, 2500);
-    }
-
-    function exportFilteredJson() {
-      if (!currentFilteredItems.length) {
-        showToast('Không có dữ liệu để xuất!');
-        return;
-      }
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(currentFilteredItems, null, 2));
-      const downloadAnchor = document.createElement('a');
-      downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", `inventory-items-export-${Date.now()}.json`);
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
-      showToast(`Đã xuất ${currentFilteredItems.length} vật phẩm!`);
     }
 
     function setSourceStatus(statusType, text) {
@@ -1929,8 +3364,16 @@
     document.getElementById('filter-subtype').addEventListener('change', () => { currentPage = 1; applyFiltersAndRender(); });
     document.getElementById('filter-element').addEventListener('change', () => { currentPage = 1; applyFiltersAndRender(); });
     document.getElementById('filter-upcoming').addEventListener('change', () => { currentPage = 1; applyFiltersAndRender(); });
+    document.getElementById('filter-edit-state').addEventListener('change', () => { currentPage = 1; applyFiltersAndRender(); });
     document.getElementById('filter-sort').addEventListener('change', () => { currentPage = 1; applyFiltersAndRender(); });
     document.getElementById('select-page-size').addEventListener('change', () => { currentPage = 1; applyFiltersAndRender(); });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeEditorModal();
+        closeExportModal();
+      }
+    });
 
     window.addEventListener('DOMContentLoaded', init);
   </script>
