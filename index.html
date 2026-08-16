@@ -1,0 +1,1938 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inventory Rampager Data CDN & Explorer</title>
+  <meta name="description" content="Data repository and manifest hub for Inventory Rampager items, versions, and game assets.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0b0f19;
+      --bg-secondary: #111827;
+      --bg-card: rgba(17, 24, 39, 0.75);
+      --bg-card-hover: rgba(31, 41, 55, 0.85);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-focus: rgba(99, 102, 241, 0.5);
+      --text-primary: #f3f4f6;
+      --text-secondary: #9ca3af;
+      --text-muted: #6b7280;
+      --accent: #6366f1;
+      --accent-glow: rgba(99, 102, 241, 0.25);
+      --accent-hover: #4f46e5;
+      --success: #10b981;
+      --success-glow: rgba(16, 185, 129, 0.2);
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --cyan: #06b6d4;
+      --purple: #a855f7;
+      
+      /* Element Colors */
+      --elem-fire: #ef4444;
+      --elem-water: #3b82f6;
+      --elem-wind: #10b981;
+      --elem-earth: #d97706;
+      --elem-light: #fbbf24;
+      --elem-dark: #8b5cf6;
+      --elem-none: #6b7280;
+
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-full: 9999px;
+      --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.5;
+      min-height: 100vh;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.15), transparent),
+        radial-gradient(ellipse 60% 40% at 80% 70%, rgba(6, 182, 212, 0.08), transparent);
+      background-attachment: fixed;
+    }
+
+    code, pre {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.875rem;
+    }
+
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, var(--accent), #8b5cf6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 16px var(--accent-glow);
+    }
+
+    .brand-icon svg {
+      width: 24px;
+      height: 24px;
+      color: white;
+    }
+
+    .brand-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      background: linear-gradient(to right, #ffffff, #cbd5e1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .badge-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.85rem;
+      background: var(--success-glow);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      border-radius: var(--radius-full);
+      transition: var(--transition);
+    }
+
+    .badge-status.warning {
+      background: rgba(245, 158, 11, 0.15);
+      border-color: rgba(245, 158, 11, 0.3);
+      color: #fbbf24;
+    }
+
+    .badge-status.cyan {
+      background: rgba(6, 182, 212, 0.15);
+      border-color: rgba(6, 182, 212, 0.3);
+      color: #22d3ee;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 8px currentColor;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.9); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .header-desc {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      max-width: 720px;
+    }
+
+    /* Grid Stats */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.375rem;
+      transition: var(--transition);
+    }
+
+    .stat-card:hover {
+      border-color: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+    }
+
+    .stat-label {
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .stat-value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+    }
+
+    .stat-sub {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Endpoints Section */
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .section-title-left {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .endpoints-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.875rem;
+      margin-bottom: 3rem;
+    }
+
+    .endpoint-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      transition: var(--transition);
+    }
+
+    .endpoint-card:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-focus);
+    }
+
+    .endpoint-left {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .method-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-sm);
+      background: rgba(99, 102, 241, 0.2);
+      color: #818cf8;
+      border: 1px solid rgba(99, 102, 241, 0.3);
+    }
+
+    .endpoint-path {
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .endpoint-desc {
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+    }
+
+    .endpoint-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      padding: 0.45rem 0.875rem;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      font-family: inherit;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-decoration: none;
+      transition: var(--transition);
+      border: 1px solid transparent;
+      user-select: none;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--border-color);
+      color: var(--text-primary);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      box-shadow: 0 2px 10px var(--accent-glow);
+    }
+
+    .btn-outline-accent {
+      background: rgba(99, 102, 241, 0.1);
+      border-color: rgba(99, 102, 241, 0.3);
+      color: #a5b4fc;
+    }
+    .btn-outline-accent:hover {
+      background: rgba(99, 102, 241, 0.2);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    /* Notice Banner for Protocol file:// or Fallback */
+    .banner {
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      border-radius: var(--radius-md);
+      padding: 0.875rem 1.25rem;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .banner-content {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.875rem;
+    }
+
+    /* Explorer Section */
+    .explorer-header {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .filter-bar {
+      display: grid;
+      grid-template-columns: 2fr repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .search-input-wrap {
+      position: relative;
+      min-width: 220px;
+    }
+
+    .search-input-wrap svg {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 18px;
+      color: var(--text-muted);
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 0.65rem 1rem 0.65rem 2.6rem;
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 0.875rem;
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .search-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+
+    .select-filter {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 0.65rem 0.85rem;
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 0.875rem;
+      outline: none;
+      cursor: pointer;
+      transition: var(--transition);
+      width: 100%;
+    }
+
+    .select-filter:focus {
+      border-color: var(--accent);
+    }
+
+    .explorer-subbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+      margin-top: 0.5rem;
+    }
+
+    .explorer-subbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Table / Item Grid */
+    .items-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      backdrop-filter: blur(12px);
+    }
+
+    .items-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.875rem;
+    }
+
+    .items-table th {
+      padding: 0.875rem 1.25rem;
+      background: rgba(0, 0, 0, 0.2);
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .items-table td {
+      padding: 0.875rem 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+      vertical-align: middle;
+    }
+
+    .items-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .items-table tbody tr {
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .items-table tbody tr:hover td {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .item-cell {
+      display: flex;
+      align-items: center;
+      gap: 0.875rem;
+    }
+
+    .item-sprite-box {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-sm);
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .item-sprite-box img {
+      max-width: 36px;
+      max-height: 36px;
+      image-rendering: pixelated;
+      object-fit: contain;
+    }
+
+    .elem-fallback-icon {
+      font-size: 1.1rem;
+      opacity: 0.85;
+      font-weight: bold;
+    }
+
+    .item-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.125rem;
+    }
+
+    .item-name {
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9375rem;
+    }
+
+    .item-id {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      padding: 0.15rem 0.45rem;
+      border-radius: var(--radius-sm);
+      text-transform: uppercase;
+    }
+
+    .tag-upcoming {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      box-shadow: 0 0 6px rgba(245, 158, 11, 0.15);
+    }
+
+    .tag-elem {
+      text-transform: capitalize;
+    }
+    .elem-water { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+    .elem-fire { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+    .elem-wind { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .elem-earth { background: rgba(217, 119, 6, 0.15); color: #fbbf24; border: 1px solid rgba(217, 119, 6, 0.3); }
+    .elem-light { background: rgba(251, 191, 36, 0.15); color: #fde047; border: 1px solid rgba(251, 191, 36, 0.3); }
+    .elem-dark { background: rgba(139, 92, 246, 0.15); color: #c084fc; border: 1px solid rgba(139, 92, 246, 0.3); }
+    .elem-none { background: rgba(107, 114, 128, 0.15); color: #9ca3af; border: 1px solid rgba(107, 114, 128, 0.3); }
+
+    .tag-type {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-color);
+      text-transform: capitalize;
+    }
+
+    .tag-subtype {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 0.1rem 0.35rem;
+      border-radius: var(--radius-sm);
+      border: 1px dashed rgba(255, 255, 255, 0.1);
+      text-transform: capitalize;
+    }
+
+    .stats-summary {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .stats-val {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    /* Empty / Dropzone / Error State */
+    .empty-state {
+      padding: 3.5rem 1.5rem;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    .empty-icon {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 1rem;
+      opacity: 0.4;
+    }
+
+    .dropzone-box {
+      border: 2px dashed rgba(99, 102, 241, 0.35);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem 1.5rem;
+      background: rgba(99, 102, 241, 0.03);
+      text-align: center;
+      transition: var(--transition);
+      margin: 1.5rem 0;
+      cursor: pointer;
+    }
+
+    .dropzone-box:hover, .dropzone-box.dragover {
+      border-color: var(--accent);
+      background: rgba(99, 102, 241, 0.08);
+      transform: scale(1.005);
+    }
+
+    /* Pagination controls */
+    .pagination-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.25rem;
+      background: rgba(0, 0, 0, 0.15);
+      border-top: 1px solid var(--border-color);
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .modal-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-content {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 720px;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+      overflow: hidden;
+    }
+
+    .modal-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-title-group {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .modal-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .modal-tabs {
+      display: flex;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 0.35rem 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+      gap: 0.5rem;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      padding: 0.4rem 0.85rem;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      transition: var(--transition);
+    }
+
+    .tab-btn.active {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    /* Modal Spec Grid */
+    .spec-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .spec-card {
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 0.875rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .spec-card-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .spec-card-value {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .json-code {
+      font-size: 0.8125rem;
+      color: #a5b4fc;
+      white-space: pre-wrap;
+      word-break: break-all;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 1.25rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .modal-close {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 0.25rem;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-close:hover {
+      color: var(--text-primary);
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: #1e293b;
+      color: #f8fafc;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: var(--transition);
+      z-index: 200;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* Footer */
+    footer {
+      margin-top: 4rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      color: var(--text-muted);
+      font-size: 0.8125rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 840px) {
+      .filter-bar {
+        grid-template-columns: 1fr 1fr;
+      }
+      .search-input-wrap {
+        grid-column: 1 / -1;
+      }
+      .hide-mobile {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hidden File Input for Manual Local JSON Loading -->
+  <input type="file" id="local-file-input" accept=".json" style="display: none;" onchange="handleFileInput(event)">
+
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <div class="header-top">
+        <div class="brand">
+          <div class="brand-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+              <line x1="12" y1="22.08" x2="12" y2="12"></line>
+            </svg>
+          </div>
+          <div>
+            <h1 class="brand-title">Inventory Rampager Data CDN</h1>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <div class="badge-status" id="badge-source-status">
+            <span class="status-dot"></span>
+            <span id="badge-source-text">Đang kết nối...</span>
+          </div>
+
+          <button class="btn btn-secondary" onclick="document.getElementById('local-file-input').click()" title="Mở tệp JSON từ máy tính nếu không dùng server">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            Tải JSON từ máy
+          </button>
+
+          <button class="btn btn-secondary" onclick="reloadDataset()" title="Tải lại dữ liệu">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+            Làm mới
+          </button>
+        </div>
+      </div>
+      <p class="header-desc">
+        Static asset repository and dataset manifest for Inventory Rampager. Tra cứu danh sách vật phẩm, thông số chỉ số, nguyên tố, sprite và phiên bản dữ liệu game.
+      </p>
+    </header>
+
+    <!-- Notice Banner for file:// protocol if active -->
+    <div class="banner" id="file-protocol-banner" style="display: none;">
+      <div class="banner-content">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        <span id="protocol-banner-msg">Bạn đang mở qua giao thức <code>file://</code>. Đã tự động kích hoạt chế độ Fallback trực tuyến / Kéo thả tệp.</span>
+      </div>
+      <div style="display: flex; gap: 0.5rem;">
+        <button class="btn btn-outline-accent" onclick="document.getElementById('local-file-input').click()">Chọn tệp item-*.json</button>
+      </div>
+    </div>
+
+    <!-- Metrics Grid -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-label">Manifest Version</span>
+        <span class="stat-value" id="val-version">--</span>
+        <span class="stat-sub" id="val-timestamp">Đang đồng bộ...</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Total Items</span>
+        <span class="stat-value" id="val-total-items">--</span>
+        <span class="stat-sub" id="val-types-breakdown">Đang tải danh mục...</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Weapons / Armors</span>
+        <span class="stat-value" id="val-gear-count">--</span>
+        <span class="stat-sub" id="val-upcoming-count">-- Upcoming items</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Nguồn dữ liệu hiện tại</span>
+        <span class="stat-value" style="font-size: 1.1rem; word-break: break-all;" id="val-data-source">--</span>
+        <span class="stat-sub" id="val-data-sub">Ready for client consumption</span>
+      </div>
+    </div>
+
+    <!-- API Endpoints Section -->
+    <div class="section-title">
+      <div class="section-title-left">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+          <polyline points="16 18 22 12 16 6"></polyline>
+          <polyline points="8 6 2 12 8 18"></polyline>
+        </svg>
+        API Endpoints & Manifest URLs
+      </div>
+    </div>
+
+    <div class="endpoints-list">
+      <div class="endpoint-card">
+        <div class="endpoint-left">
+          <span class="method-badge">GET</span>
+          <code class="endpoint-path" id="version-endpoint-text">/version.json</code>
+          <span class="endpoint-desc">Version manifest & active dataset pointer</span>
+        </div>
+        <div class="endpoint-actions">
+          <button class="btn btn-secondary" onclick="copyFullUrl('version.json')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            Copy URL
+          </button>
+          <a href="version.json" id="open-version-link" target="_blank" class="btn btn-primary">Open JSON</a>
+        </div>
+      </div>
+
+      <div class="endpoint-card">
+        <div class="endpoint-left">
+          <span class="method-badge">GET</span>
+          <code class="endpoint-path" id="active-item-endpoint">/item-[version].json</code>
+          <span class="endpoint-desc">Full items dataset containing stats, elements & sprites</span>
+        </div>
+        <div class="endpoint-actions">
+          <button class="btn btn-secondary" id="copy-dataset-btn" onclick="copyDatasetUrl()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            Copy URL
+          </button>
+          <a href="#" id="open-dataset-link" target="_blank" class="btn btn-primary">Open JSON</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Explorer Section -->
+    <div class="explorer-header">
+      <div class="section-title" style="margin-bottom: 0;">
+        <div class="section-title-left">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--cyan);">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          Item Dataset Explorer
+        </div>
+        <div class="explorer-subbar-actions">
+          <button class="btn btn-secondary" onclick="exportFilteredJson()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Xuất JSON đang lọc
+          </button>
+        </div>
+      </div>
+      
+      <div class="filter-bar">
+        <div class="search-input-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="search-input" class="search-input" placeholder="Tìm theo tên, ID, hệ, loại hoặc subtype...">
+        </div>
+
+        <select id="filter-type" class="select-filter">
+          <option value="all">Tất cả loại (Type)</option>
+          <option value="weapon">Weapon</option>
+          <option value="armor">Armor</option>
+        </select>
+
+        <select id="filter-subtype" class="select-filter">
+          <option value="all">Tất cả SubType</option>
+        </select>
+
+        <select id="filter-element" class="select-filter">
+          <option value="all">Tất cả hệ (Element)</option>
+          <option value="fire">Fire</option>
+          <option value="water">Water</option>
+          <option value="wind">Wind</option>
+          <option value="earth">Earth</option>
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+          <option value="none">None</option>
+        </select>
+
+        <select id="filter-upcoming" class="select-filter">
+          <option value="all">Tất cả trạng thái</option>
+          <option value="upcoming">Upcoming Only</option>
+          <option value="released">Released Only</option>
+        </select>
+
+        <select id="filter-sort" class="select-filter">
+          <option value="default">Sắp xếp: Mặc định</option>
+          <option value="name-asc">Tên (A-Z)</option>
+          <option value="name-desc">Tên (Z-A)</option>
+          <option value="dmg-desc">Sát thương (Cao-Thấp)</option>
+          <option value="arm-desc">Giáp (Cao-Thấp)</option>
+          <option value="cd-asc">Hồi chiêu (Nhanh-Chậm)</option>
+        </select>
+      </div>
+
+      <div class="explorer-subbar">
+        <span id="filter-count-summary">Đang hiển thị -- vật phẩm</span>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span>Hiển thị:</span>
+          <select id="select-page-size" class="select-filter" style="width: auto; padding: 0.25rem 0.5rem; font-size: 0.8125rem;">
+            <option value="50">50 items</option>
+            <option value="100">100 items</option>
+            <option value="200">200 items</option>
+            <option value="999999">Tất cả</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Items List Table -->
+    <div class="items-container" id="drop-target-area">
+      <table class="items-table">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Type / Subtype</th>
+            <th>Element</th>
+            <th class="hide-mobile">Key Stats & Boosts</th>
+            <th style="text-align: right;">Action</th>
+          </tr>
+        </thead>
+        <tbody id="items-tbody">
+          <tr>
+            <td colspan="5" class="empty-state">
+              <div class="empty-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              </div>
+              <p>Đang tải dữ liệu vật phẩm...</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Pagination Bar -->
+      <div class="pagination-bar" id="pagination-container" style="display: none;">
+        <span id="page-info" style="font-size: 0.8125rem; color: var(--text-muted);">Trang 1 / 1</span>
+        <div style="display: flex; gap: 0.5rem;">
+          <button class="btn btn-secondary" id="btn-prev-page" onclick="changePage(-1)">Trước</button>
+          <button class="btn btn-secondary" id="btn-next-page" onclick="changePage(1)">Tiếp</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <p>Inventory Rampager &copy; Data Repository CDN. Static asset delivery & dataset manifest.</p>
+      <p>Source Repo: <a href="https://github.com/sdroimod/Inventory-Rampager-Data" target="_blank" style="color: var(--accent); text-decoration: none;">sdroimod/Inventory-Rampager-Data</a></p>
+    </footer>
+  </div>
+
+  <!-- Detail & JSON Modal -->
+  <div class="modal-backdrop" id="json-modal" onclick="closeModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <div class="item-sprite-box" id="modal-sprite-box" style="width: 36px; height: 36px;">
+            <img id="modal-sprite-img" src="" alt="" style="max-width: 28px; max-height: 28px;">
+          </div>
+          <div>
+            <span class="modal-title" id="modal-item-title">Item Details</span>
+            <div id="modal-item-id" style="font-size: 0.75rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;"></div>
+          </div>
+        </div>
+        <button class="modal-close" onclick="closeModal()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <div class="modal-tabs">
+        <button class="tab-btn active" id="tab-btn-spec" onclick="switchModalTab('spec')">Tổng quan (Overview)</button>
+        <button class="tab-btn" id="tab-btn-json" onclick="switchModalTab('json')">Mã JSON thuần (Raw)</button>
+      </div>
+
+      <div class="modal-body" id="modal-spec-view">
+        <div id="modal-spec-content"></div>
+      </div>
+
+      <div class="modal-body" id="modal-json-view" style="display: none;">
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 0.75rem;">
+          <button class="btn btn-secondary" onclick="copyCurrentModalJson()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            Sao chép JSON
+          </button>
+        </div>
+        <pre class="json-code" id="modal-json-content"></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M20 6L9 17l-5-5"></path></svg>
+    <span id="toast-msg">Đã sao chép!</span>
+  </div>
+
+  <script>
+    // State
+    let allItems = [];
+    let activeVersion = '1786863158';
+    let datasetFileName = 'item-1786863158.json';
+    let currentSourceMode = 'local'; // 'local' | 'github_raw' | 'jsdelivr' | 'file_reader'
+    let currentFilteredItems = [];
+    let currentPage = 1;
+    let pageSize = 50;
+    let currentModalItem = null;
+
+    // Sprite CDN base options for fallback
+    const SPRITE_CDN_PRIMARY = 'https://raw.githubusercontent.com/sdroimod/Inventory-Rampager/main/public';
+    const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/sdroimod/Inventory-Rampager-Data/main/';
+    const JSDELIVR_BASE = 'https://cdn.jsdelivr.net/gh/sdroimod/Inventory-Rampager-Data@main/';
+
+    // Element Icons & Colors
+    const ELEMENT_ICONS = {
+      fire: '🔥',
+      water: '💧',
+      wind: '🍃',
+      earth: '🛡️',
+      light: '✨',
+      dark: '🔮',
+      none: '⚪'
+    };
+
+    /**
+     * Resolve valid relative URL safely
+     */
+    function resolveRelativeUrl(path) {
+      if (!path) return '';
+      if (path.startsWith('http://') || path.startsWith('https://')) return path;
+      const cleanPath = path.startsWith('/') ? path.substring(1) : path;
+      try {
+        return new URL(cleanPath, window.location.href).href;
+      } catch (e) {
+        return cleanPath;
+      }
+    }
+
+    /**
+     * Main Initialization Pipeline with Multi-Strategy Fallback
+     */
+    async function init() {
+      const isFileProto = window.location.protocol === 'file:';
+      if (isFileProto) {
+        const banner = document.getElementById('file-protocol-banner');
+        if (banner) banner.style.display = 'flex';
+      }
+
+      setSourceStatus('connecting', 'Đang nạp dữ liệu...');
+
+      // Strategy 1: If on HTTP / HTTPS / localhost, try local fetch
+      if (!isFileProto) {
+        try {
+          const success = await tryFetchLocal();
+          if (success) return;
+        } catch (e) {
+          console.warn('[CDN] Local fetch failed, trying remote CDN fallback...', e);
+        }
+      }
+
+      // Strategy 2: Try GitHub Raw CDN / jsDelivr CDN
+      try {
+        const success = await tryFetchGitHubRaw();
+        if (success) return;
+      } catch (e) {
+        console.warn('[CDN] GitHub Raw fetch failed, trying jsDelivr...', e);
+      }
+
+      try {
+        const success = await tryFetchJsDelivr();
+        if (success) return;
+      } catch (e) {
+        console.warn('[CDN] jsDelivr fetch failed.', e);
+      }
+
+      // Strategy 3: Render Drag-and-Drop & Local File Selector Prompt
+      showLocalFilePrompt(isFileProto);
+    }
+
+    /**
+     * Strategy 1: Fetch local relative files
+     */
+    async function tryFetchLocal() {
+      const vRes = await fetch('version.json?t=' + Date.now());
+      if (!vRes.ok) throw new Error('HTTP ' + vRes.status + ' on version.json');
+      const vData = await vRes.json();
+      
+      activeVersion = vData.version || '1786863158';
+      let rawUrl = vData.url || `item-${activeVersion}.json`;
+      datasetFileName = rawUrl.startsWith('/') ? rawUrl.substring(1) : rawUrl;
+
+      const itemRes = await fetch(datasetFileName + '?t=' + Date.now());
+      if (!itemRes.ok) throw new Error('HTTP ' + itemRes.status + ' on ' + datasetFileName);
+      const items = await itemRes.json();
+
+      currentSourceMode = 'local';
+      setSourceStatus('success', 'Local Server / GitHub Pages Live');
+      document.getElementById('val-data-source').textContent = datasetFileName;
+      document.getElementById('val-data-sub').textContent = 'Loaded from relative origin';
+
+      loadDatasetData(vData, items);
+      return true;
+    }
+
+    /**
+     * Strategy 2A: Fetch from GitHub Raw
+     */
+    async function tryFetchGitHubRaw() {
+      const vRes = await fetch(GITHUB_RAW_BASE + 'version.json');
+      if (!vRes.ok) throw new Error('GitHub Raw version.json failed: ' + vRes.status);
+      const vData = await vRes.json();
+
+      activeVersion = vData.version || '1786863158';
+      let rawUrl = vData.url || `item-${activeVersion}.json`;
+      datasetFileName = rawUrl.startsWith('/') ? rawUrl.substring(1) : rawUrl;
+
+      const itemRes = await fetch(GITHUB_RAW_BASE + datasetFileName);
+      if (!itemRes.ok) throw new Error('GitHub Raw item dataset failed: ' + itemRes.status);
+      const items = await itemRes.json();
+
+      currentSourceMode = 'github_raw';
+      setSourceStatus('warning', 'GitHub Raw CDN (Online Fallback)');
+      document.getElementById('val-data-source').textContent = 'GitHub Raw CDN';
+      document.getElementById('val-data-sub').textContent = 'github.com/sdroimod/Inventory-Rampager-Data';
+
+      loadDatasetData(vData, items);
+      return true;
+    }
+
+    /**
+     * Strategy 2B: Fetch from jsDelivr CDN
+     */
+    async function tryFetchJsDelivr() {
+      const vRes = await fetch(JSDELIVR_BASE + 'version.json');
+      if (!vRes.ok) throw new Error('jsDelivr version.json failed: ' + vRes.status);
+      const vData = await vRes.json();
+
+      activeVersion = vData.version || '1786863158';
+      let rawUrl = vData.url || `item-${activeVersion}.json`;
+      datasetFileName = rawUrl.startsWith('/') ? rawUrl.substring(1) : rawUrl;
+
+      const itemRes = await fetch(JSDELIVR_BASE + datasetFileName);
+      if (!itemRes.ok) throw new Error('jsDelivr dataset failed: ' + itemRes.status);
+      const items = await itemRes.json();
+
+      currentSourceMode = 'jsdelivr';
+      setSourceStatus('cyan', 'jsDelivr Global CDN');
+      document.getElementById('val-data-source').textContent = 'jsDelivr Fast CDN';
+      document.getElementById('val-data-sub').textContent = 'cdn.jsdelivr.net';
+
+      loadDatasetData(vData, items);
+      return true;
+    }
+
+    /**
+     * Populate UI with parsed dataset
+     */
+    function loadDatasetData(vData, items) {
+      if (!Array.isArray(items)) {
+        throw new Error('Dữ liệu JSON không phải mảng vật phẩm hợp lệ.');
+      }
+
+      allItems = items;
+      activeVersion = (vData && vData.version) ? vData.version : activeVersion;
+
+      // Update version display
+      document.getElementById('val-version').textContent = 'v' + activeVersion;
+      const vDate = new Date(parseInt(activeVersion) * 1000);
+      if (!isNaN(vDate.getTime()) && parseInt(activeVersion) > 1000000000) {
+        document.getElementById('val-timestamp').textContent = 'Cập nhật: ' + vDate.toLocaleString('vi-VN');
+      } else {
+        document.getElementById('val-timestamp').textContent = 'Unix: ' + activeVersion;
+      }
+
+      // Endpoints UI update
+      document.getElementById('active-item-endpoint').textContent = '/' + datasetFileName;
+      const resolvedItemUrl = resolveRelativeUrl(datasetFileName);
+      document.getElementById('open-dataset-link').href = resolvedItemUrl;
+      document.getElementById('open-version-link').href = resolveRelativeUrl('version.json');
+
+      // Populate SubTypes Filter dynamically
+      populateSubTypeFilter();
+
+      // Metrics calculation
+      const total = allItems.length;
+      const weapons = allItems.filter(i => (i.type || '').toLowerCase() === 'weapon').length;
+      const armors = allItems.filter(i => (i.type || '').toLowerCase() === 'armor').length;
+      const upcoming = allItems.filter(i => i.isUpcoming === true).length;
+
+      document.getElementById('val-total-items').textContent = total.toLocaleString();
+      document.getElementById('val-types-breakdown').textContent = `${weapons} weapons, ${armors} armors`;
+      document.getElementById('val-gear-count').textContent = `${weapons} / ${armors}`;
+      document.getElementById('val-upcoming-count').textContent = `${upcoming} Upcoming items`;
+
+      // Render table
+      currentPage = 1;
+      applyFiltersAndRender();
+    }
+
+    /**
+     * Populate subTypes filter list dynamically from items
+     */
+    function populateSubTypeFilter() {
+      const subTypeSelect = document.getElementById('filter-subtype');
+      const currentVal = subTypeSelect.value;
+      const subTypes = new Set();
+
+      allItems.forEach(i => {
+        if (i.subType && typeof i.subType === 'string') {
+          subTypes.add(i.subType.toLowerCase());
+        }
+      });
+
+      const sortedSubTypes = Array.from(subTypes).sort();
+      let html = '<option value="all">Tất cả SubType</option>';
+      sortedSubTypes.forEach(st => {
+        html += `<option value="${st}">${st.charAt(0).toUpperCase() + st.slice(1)}</option>`;
+      });
+      subTypeSelect.innerHTML = html;
+      if (sortedSubTypes.includes(currentVal)) {
+        subTypeSelect.value = currentVal;
+      }
+    }
+
+    /**
+     * Filter, Sort and Render Table
+     */
+    function applyFiltersAndRender() {
+      const query = document.getElementById('search-input').value.trim().toLowerCase();
+      const typeFilter = document.getElementById('filter-type').value;
+      const subTypeFilter = document.getElementById('filter-subtype').value;
+      const elementFilter = document.getElementById('filter-element').value;
+      const upcomingFilter = document.getElementById('filter-upcoming').value;
+      const sortBy = document.getElementById('filter-sort').value;
+      pageSize = parseInt(document.getElementById('select-page-size').value, 10) || 50;
+
+      // 1. Filter
+      currentFilteredItems = allItems.filter(item => {
+        const name = (item.name || '').toLowerCase();
+        const id = (item.id || '').toLowerCase();
+        const subType = (item.subType || '').toLowerCase();
+        const elem = (item.element || '').toLowerCase();
+        const type = (item.type || '').toLowerCase();
+
+        // Search Query
+        const matchesQuery = !query || 
+          name.includes(query) ||
+          id.includes(query) ||
+          subType.includes(query) ||
+          elem.includes(query) ||
+          type.includes(query);
+
+        // Type
+        const matchesType = typeFilter === 'all' || type === typeFilter;
+
+        // SubType
+        const matchesSubType = subTypeFilter === 'all' || subType === subTypeFilter;
+
+        // Element
+        const matchesElement = elementFilter === 'all' || elem === elementFilter;
+
+        // Upcoming
+        let matchesUpcoming = true;
+        if (upcomingFilter === 'upcoming') matchesUpcoming = (item.isUpcoming === true);
+        if (upcomingFilter === 'released') matchesUpcoming = (!item.isUpcoming);
+
+        return matchesQuery && matchesType && matchesSubType && matchesElement && matchesUpcoming;
+      });
+
+      // 2. Sort
+      if (sortBy === 'name-asc') {
+        currentFilteredItems.sort((a, b) => (a.name || a.id || '').localeCompare(b.name || b.id || ''));
+      } else if (sortBy === 'name-desc') {
+        currentFilteredItems.sort((a, b) => (b.name || b.id || '').localeCompare(a.name || a.id || ''));
+      } else if (sortBy === 'dmg-desc') {
+        currentFilteredItems.sort((a, b) => {
+          const dmgA = (a.stats && a.stats.damage && a.stats.damage[1]) || 0;
+          const dmgB = (b.stats && b.stats.damage && b.stats.damage[1]) || 0;
+          return dmgB - dmgA;
+        });
+      } else if (sortBy === 'arm-desc') {
+        currentFilteredItems.sort((a, b) => {
+          const armA = (a.stats && a.stats.armor && a.stats.armor[1]) || 0;
+          const armB = (b.stats && b.stats.armor && b.stats.armor[1]) || 0;
+          return armB - armA;
+        });
+      } else if (sortBy === 'cd-asc') {
+        currentFilteredItems.sort((a, b) => (a.cooldown || 99999) - (b.cooldown || 99999));
+      }
+
+      // Update Summary Counter
+      document.getElementById('filter-count-summary').textContent = 
+        `Tìm thấy ${currentFilteredItems.length.toLocaleString()} trên tổng ${allItems.length.toLocaleString()} vật phẩm`;
+
+      // 3. Render Paginated Items
+      renderTablePage();
+    }
+
+    function renderTablePage() {
+      const tbody = document.getElementById('items-tbody');
+      const totalFiltered = currentFilteredItems.length;
+
+      if (totalFiltered === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" class="empty-state">
+              <div class="empty-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              </div>
+              <p style="font-weight: 500;">Không tìm thấy vật phẩm nào khớp với bộ lọc.</p>
+              <p style="font-size: 0.8125rem; margin-top: 0.25rem;">Thử xoá bớt từ khoá tìm kiếm hoặc đổi tiêu chí lọc.</p>
+            </td>
+          </tr>
+        `;
+        document.getElementById('pagination-container').style.display = 'none';
+        return;
+      }
+
+      const totalPages = Math.ceil(totalFiltered / pageSize);
+      if (currentPage > totalPages) currentPage = totalPages;
+      if (currentPage < 1) currentPage = 1;
+
+      const startIndex = (currentPage - 1) * pageSize;
+      const endIndex = Math.min(startIndex + pageSize, totalFiltered);
+      const pageItems = currentFilteredItems.slice(startIndex, endIndex);
+
+      tbody.innerHTML = pageItems.map(item => {
+        const elem = (item.element || 'none').toLowerCase();
+        const elemClass = `elem-${elem}`;
+        const elemIcon = ELEMENT_ICONS[elem] || '⚪';
+        
+        let statsInfo = '<span style="color:var(--text-muted);">-</span>';
+        if (item.stats) {
+          const statsParts = [];
+          if (item.stats.damage && item.stats.damage.length && (item.stats.damage[0] > 0 || item.stats.damage[1] > 0)) {
+            statsParts.push(`<span class="stats-val" style="color: #fbbf24;">DMG:</span> ${item.stats.damage[0]}-${item.stats.damage[1]}`);
+          }
+          if (item.stats.armor && item.stats.armor.length && (item.stats.armor[0] > 0 || item.stats.armor[1] > 0)) {
+            statsParts.push(`<span class="stats-val" style="color: #60a5fa;">ARM:</span> ${item.stats.armor[0]}-${item.stats.armor[1]}`);
+          }
+          if (item.cooldown) {
+            statsParts.push(`<span style="color:var(--text-muted);">${item.cooldown}ms</span>`);
+          }
+          if (statsParts.length) {
+            statsInfo = statsParts.join(' <span style="color: rgba(255,255,255,0.15)">|</span> ');
+          }
+        }
+
+        // Sprite handling with CDN fallback
+        const rawSprite = item.sprite || '';
+        const spriteLocal = rawSprite ? (rawSprite.startsWith('/') ? rawSprite.substring(1) : rawSprite) : '';
+        const spriteRemote = rawSprite ? `${SPRITE_CDN_PRIMARY}${rawSprite.startsWith('/') ? '' : '/'}${rawSprite}` : '';
+
+        return `
+          <tr onclick="openItemModalById('${escapeJs(item.id)}')">
+            <td>
+              <div class="item-cell">
+                <div class="item-sprite-box">
+                  ${rawSprite ? `
+                    <img src="${escapeHtml(spriteLocal)}" alt="" 
+                      onerror="if (!this.dataset.triedRemote) { this.dataset.triedRemote='1'; this.src='${escapeHtml(spriteRemote)}'; } else { this.style.display='none'; this.nextElementSibling.style.display='block'; }">
+                    <span class="elem-fallback-icon" style="display: none;">${elemIcon}</span>
+                  ` : `
+                    <span class="elem-fallback-icon">${elemIcon}</span>
+                  `}
+                </div>
+                <div class="item-info">
+                  <div class="item-name">
+                    ${escapeHtml(item.name || item.id || 'Unnamed')}
+                    ${item.isUpcoming ? `<span class="tag tag-upcoming">Upcoming</span>` : ''}
+                    ${item.levelMax ? `<span style="font-size: 0.6875rem; color: var(--text-muted); font-weight: 500;">Lv.${item.levelMax}</span>` : ''}
+                  </div>
+                  <span class="item-id">${escapeHtml(item.id || '')}</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div style="display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap;">
+                <span class="tag tag-type">${escapeHtml(item.type || '-')}</span>
+                ${item.subType ? `<span class="tag-subtype">${escapeHtml(item.subType)}</span>` : ''}
+              </div>
+            </td>
+            <td>
+              <span class="tag tag-elem ${elemClass}">${elemIcon} ${escapeHtml(item.element || 'none')}</span>
+            </td>
+            <td class="hide-mobile">
+              <div class="stats-summary">${statsInfo}</div>
+            </td>
+            <td style="text-align: right;" onclick="event.stopPropagation()">
+              <button class="btn btn-secondary" onclick="openItemModalById('${escapeJs(item.id)}')" title="Xem chi tiết & JSON">
+                Chi tiết
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      // Pagination setup
+      const paginationContainer = document.getElementById('pagination-container');
+      if (totalPages > 1) {
+        paginationContainer.style.display = 'flex';
+        document.getElementById('page-info').textContent = 
+          `Trang ${currentPage} / ${totalPages} (Từ ${startIndex + 1} - ${endIndex} trong ${totalFiltered} kết quả)`;
+        document.getElementById('btn-prev-page').disabled = (currentPage <= 1);
+        document.getElementById('btn-next-page').disabled = (currentPage >= totalPages);
+      } else {
+        paginationContainer.style.display = 'none';
+      }
+    }
+
+    function changePage(delta) {
+      currentPage += delta;
+      renderTablePage();
+      const container = document.getElementById('drop-target-area');
+      if (container) container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    /**
+     * Handle manual file input & drag and drop
+     */
+    function handleFileInput(e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      readJsonFile(file);
+    }
+
+    function readJsonFile(file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        try {
+          const parsed = JSON.parse(event.target.result);
+          if (Array.isArray(parsed)) {
+            // It's an items array
+            currentSourceMode = 'file_reader';
+            datasetFileName = file.name;
+            setSourceStatus('cyan', `File: ${file.name}`);
+            document.getElementById('val-data-source').textContent = file.name;
+            document.getElementById('val-data-sub').textContent = 'Nạp từ máy tính qua FileReader';
+            loadDatasetData({ version: 'Local File' }, parsed);
+            showToast(`Đã nạp thành công ${parsed.length} vật phẩm từ ${file.name}`);
+          } else if (parsed && parsed.version && parsed.url) {
+            // It's a version.json file
+            showToast(`Đã đọc version.json (v${parsed.version}). Hãy nạp tiếp file item JSON tương ứng.`);
+          } else {
+            throw new Error('Cấu trúc file JSON không khớp với định dạng vật phẩm.');
+          }
+        } catch (err) {
+          alert('Lỗi khi đọc file JSON: ' + err.message);
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    /**
+     * Show interactive Dropzone / Prompt when auto-fetch fails
+     */
+    function showLocalFilePrompt(isFileProto) {
+      setSourceStatus('warning', isFileProto ? 'File Protocol (Chờ nạp file)' : 'Không có kết nối CDN');
+      document.getElementById('val-data-source').textContent = 'Chưa nạp dữ liệu';
+      document.getElementById('val-data-sub').textContent = 'Hãy chọn tệp item-*.json';
+
+      const tbody = document.getElementById('items-tbody');
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="5" style="padding: 2.5rem 1.5rem;">
+            <div class="dropzone-box" onclick="document.getElementById('local-file-input').click()">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5" style="margin-bottom: 0.75rem;">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+              <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.35rem;">Kéo thả tệp <code>item-*.json</code> vào đây hoặc nhấp để chọn tệp</h3>
+              <p style="color: var(--text-secondary); font-size: 0.875rem; max-width: 500px; margin: 0 auto 1rem;">
+                Trình duyệt đã bảo vệ chặn fetch trực tiếp từ <code>file://</code>. Bạn có thể nạp ngay file JSON từ thư mục này để duyệt offline không cần cài đặt web server!
+              </p>
+              <button class="btn btn-primary" onclick="event.stopPropagation(); document.getElementById('local-file-input').click();">
+                Chọn tệp JSON từ máy tính
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }
+
+    /**
+     * Drag & Drop Event listeners on document
+     */
+    window.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    });
+
+    window.addEventListener('drop', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        const file = e.dataTransfer.files[0];
+        if (file.name.endsWith('.json')) {
+          readJsonFile(file);
+        } else {
+          showToast('Vui lòng kéo thả tệp định dạng .json');
+        }
+      }
+    });
+
+    /**
+     * Modal Dialog handling
+     */
+    function openItemModalById(itemId) {
+      const item = allItems.find(i => i.id === itemId);
+      if (!item) return;
+      currentModalItem = item;
+
+      // Header
+      document.getElementById('modal-item-title').textContent = item.name || item.id || 'Item Details';
+      document.getElementById('modal-item-id').textContent = `ID: ${item.id || '-'}`;
+
+      // Sprite
+      const modalSpriteImg = document.getElementById('modal-sprite-img');
+      const rawSprite = item.sprite || '';
+      const spriteLocal = rawSprite ? (rawSprite.startsWith('/') ? rawSprite.substring(1) : rawSprite) : '';
+      const spriteRemote = rawSprite ? `${SPRITE_CDN_PRIMARY}${rawSprite.startsWith('/') ? '' : '/'}${rawSprite}` : '';
+
+      if (rawSprite) {
+        modalSpriteImg.src = spriteLocal;
+        modalSpriteImg.onerror = function() {
+          if (!this.dataset.triedRemote) {
+            this.dataset.triedRemote = '1';
+            this.src = spriteRemote;
+          } else {
+            this.style.display = 'none';
+          }
+        };
+        modalSpriteImg.style.display = 'block';
+      } else {
+        modalSpriteImg.style.display = 'none';
+      }
+
+      // Render Spec View
+      renderModalSpec(item);
+
+      // Render JSON View
+      document.getElementById('modal-json-content').textContent = JSON.stringify(item, null, 2);
+
+      // Default to spec tab
+      switchModalTab('spec');
+
+      document.getElementById('json-modal').classList.add('open');
+    }
+
+    function renderModalSpec(item) {
+      const elem = (item.element || 'none').toLowerCase();
+      const elemIcon = ELEMENT_ICONS[elem] || '⚪';
+
+      let statsHtml = '';
+      if (item.stats) {
+        if (item.stats.damage) {
+          statsHtml += `
+            <div class="spec-card">
+              <span class="spec-card-label">Sát thương (Damage)</span>
+              <span class="spec-card-value" style="color: #fbbf24;">${item.stats.damage[0]} - ${item.stats.damage[1]}</span>
+            </div>
+          `;
+        }
+        if (item.stats.armor) {
+          statsHtml += `
+            <div class="spec-card">
+              <span class="spec-card-label">Giáp (Armor)</span>
+              <span class="spec-card-value" style="color: #60a5fa;">${item.stats.armor[0]} - ${item.stats.armor[1]}</span>
+            </div>
+          `;
+        }
+        if (item.stats.pierce !== undefined) {
+          statsHtml += `
+            <div class="spec-card">
+              <span class="spec-card-label">Xuyên phá (Pierce)</span>
+              <span class="spec-card-value">${item.stats.pierce}</span>
+            </div>
+          `;
+        }
+        if (item.stats.flightSpeed) {
+          statsHtml += `
+            <div class="spec-card">
+              <span class="spec-card-label">Tốc độ bay</span>
+              <span class="spec-card-value">${item.stats.flightSpeed}</span>
+            </div>
+          `;
+        }
+        if (item.stats.explosionRange) {
+          statsHtml += `
+            <div class="spec-card">
+              <span class="spec-card-label">Bán kính nổ</span>
+              <span class="spec-card-value">${item.stats.explosionRange}</span>
+            </div>
+          `;
+        }
+      }
+
+      if (item.cooldown) {
+        statsHtml += `
+          <div class="spec-card">
+            <span class="spec-card-label">Hồi chiêu (Cooldown)</span>
+            <span class="spec-card-value">${item.cooldown} ms</span>
+          </div>
+        `;
+      }
+
+      if (item.levelMax) {
+        statsHtml += `
+          <div class="spec-card">
+            <span class="spec-card-label">Cấp tối đa</span>
+            <span class="spec-card-value">Lv. ${item.levelMax}</span>
+          </div>
+        `;
+      }
+
+      let boostsHtml = '';
+      if (item.boosts && Object.keys(item.boosts).length > 0) {
+        boostsHtml = `
+          <div style="margin-top: 1.25rem;">
+            <span class="stat-label">Chỉ số cộng thêm (Boosts)</span>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem;">
+              ${Object.entries(item.boosts).map(([key, val]) => `
+                <span class="tag" style="background: rgba(99, 102, 241, 0.15); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.3); font-size: 0.75rem; padding: 0.3rem 0.6rem;">
+                  +${Math.round((val - 1) * 100)}% ${key.toUpperCase()}
+                </span>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      document.getElementById('modal-spec-content').innerHTML = `
+        <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+          <span class="tag tag-elem elem-${elem}">${elemIcon} ${item.element || 'None'}</span>
+          <span class="tag tag-type">${item.type || 'Unknown'}</span>
+          ${item.subType ? `<span class="tag-subtype">${item.subType}</span>` : ''}
+          ${item.isUpcoming ? `<span class="tag tag-upcoming">Upcoming Release</span>` : ''}
+        </div>
+
+        <span class="stat-label">Thông số chiến đấu</span>
+        <div class="spec-grid">
+          ${statsHtml || '<div class="spec-card"><span class="spec-card-value" style="color:var(--text-muted); font-size:0.9rem;">Không có thông số đặc biệt</span></div>'}
+        </div>
+
+        ${boostsHtml}
+      `;
+    }
+
+    function switchModalTab(tab) {
+      const specTabBtn = document.getElementById('tab-btn-spec');
+      const jsonTabBtn = document.getElementById('tab-btn-json');
+      const specView = document.getElementById('modal-spec-view');
+      const jsonView = document.getElementById('modal-json-view');
+
+      if (tab === 'spec') {
+        specTabBtn.classList.add('active');
+        jsonTabBtn.classList.remove('active');
+        specView.style.display = 'block';
+        jsonView.style.display = 'none';
+      } else {
+        jsonTabBtn.classList.add('active');
+        specTabBtn.classList.remove('active');
+        jsonView.style.display = 'block';
+        specView.style.display = 'none';
+      }
+    }
+
+    function closeModal(e) {
+      document.getElementById('json-modal').classList.remove('open');
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    /**
+     * Copy & Download Utils
+     */
+    function copyFullUrl(relPath) {
+      const url = resolveRelativeUrl(relPath);
+      copyText(url);
+    }
+
+    function copyDatasetUrl() {
+      const url = resolveRelativeUrl(datasetFileName);
+      copyText(url);
+    }
+
+    function copyCurrentModalJson() {
+      if (!currentModalItem) return;
+      copyText(JSON.stringify(currentModalItem, null, 2));
+    }
+
+    function copyText(text) {
+      if (!text) return;
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => showToast('Đã sao chép vào clipboard!'));
+      } else {
+        const temp = document.createElement('textarea');
+        temp.value = text;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand('copy');
+        document.body.removeChild(temp);
+        showToast('Đã sao chép vào clipboard!');
+      }
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-msg').textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2500);
+    }
+
+    function exportFilteredJson() {
+      if (!currentFilteredItems.length) {
+        showToast('Không có dữ liệu để xuất!');
+        return;
+      }
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(currentFilteredItems, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `inventory-items-export-${Date.now()}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showToast(`Đã xuất ${currentFilteredItems.length} vật phẩm!`);
+    }
+
+    function setSourceStatus(statusType, text) {
+      const badge = document.getElementById('badge-source-status');
+      const badgeText = document.getElementById('badge-source-text');
+      badge.className = 'badge-status';
+
+      if (statusType === 'success') {
+        // default green
+      } else if (statusType === 'warning') {
+        badge.classList.add('warning');
+      } else if (statusType === 'cyan') {
+        badge.classList.add('cyan');
+      } else {
+        badge.classList.add('warning');
+      }
+      badgeText.textContent = text;
+    }
+
+    function reloadDataset() {
+      init();
+    }
+
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function escapeJs(str) {
+      return String(str || '')
+        .replace(/\\/g, '\\\\')
+        .replace(/'/g, "\\'")
+        .replace(/"/g, '\\"');
+    }
+
+    // Filter event listeners with debounce
+    let debounceTimer;
+    document.getElementById('search-input').addEventListener('input', () => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        currentPage = 1;
+        applyFiltersAndRender();
+      }, 150);
+    });
+
+    document.getElementById('filter-type').addEventListener('change', () => { currentPage = 1; applyFiltersAndRender(); });
+    document.getElementById('filter-subtype').addEventListener('change', () => { currentPage = 1; applyFiltersAndRender(); });
+    document.getElementById('filter-element').addEventListener('change', () => { currentPage = 1; applyFiltersAndRender(); });
+    document.getElementById('filter-upcoming').addEventListener('change', () => { currentPage = 1; applyFiltersAndRender(); });
+    document.getElementById('filter-sort').addEventListener('change', () => { currentPage = 1; applyFiltersAndRender(); });
+    document.getElementById('select-page-size').addEventListener('change', () => { currentPage = 1; applyFiltersAndRender(); });
+
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
