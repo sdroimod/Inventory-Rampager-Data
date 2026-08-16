@@ -1,0 +1,20 @@
+/*
+  Access-Control-Allow-Origin: *
+
+/version.json
+  Cache-Control: no-cache, no-store, must-revalidate
+
+/item-*
+  Cache-Control: public, max-age=31536000, immutable
+
+/class-*
+  Cache-Control: public, max-age=31536000, immutable
+
+/beverage-*
+  Cache-Control: public, max-age=31536000, immutable
+
+/skilltree-*
+  Cache-Control: public, max-age=31536000, immutable
+
+/notification-*
+  Cache-Control: public, max-age=31536000, immutable
