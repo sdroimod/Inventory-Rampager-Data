@@ -1,12 +1,12 @@
 {
-    "item-version": "1792426915",
-    "item-url": "/item-1792426915.json",
-    "class-version": "1786863158",
-    "class-url": "/class-1786863158.json",
-    "skilltree-version": "1786863158",
-    "skilltree-url": "/skilltree-1786863158.json",
-    "beverage-version": "1786863158",
-    "beverage-url": "/beverage-1786863158.json",
-    "notification-version": "1786863158",
-    "notification-url": "/notification-1786863158.json"
+  "item-version": "1792426915",
+  "item-url": "/item-1792426915.json",
+  "class-version": "1786863158",
+  "class-url": "/class-1786863158.json",
+  "skilltree-version": "1786863158",
+  "skilltree-url": "/skilltree-1786863158.json",
+  "beverage-version": "1786863158",
+  "beverage-url": "/beverage-1786863158.json",
+  "notification-version": "1792634719",
+  "notification-url": "/notification-1792634719.json"
 }
